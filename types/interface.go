@@ -18,6 +18,8 @@ type IRow interface {
 type ITable interface {
 	OvsdbTableName() string
 	OvsdbIsRoot() bool
+	OvsdbHasIndex() bool
+	OvsdbGetByAnyIndex(IRow) IRow
 
 	Rows() []IRow
 	NewRow() IRow
