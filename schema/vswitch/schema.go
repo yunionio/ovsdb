@@ -174,6 +174,14 @@ func (tbl *AutoAttachTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl AutoAttachTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl AutoAttachTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl AutoAttachTable) FindOneMatchNonZeros(row1 *AutoAttach) *AutoAttach {
 	for i := range tbl {
 		row := &tbl[i]
@@ -299,6 +307,37 @@ func (tbl BridgeTable) NewRow() types.IRow {
 func (tbl *BridgeTable) AppendRow(irow types.IRow) {
 	row := irow.(*Bridge)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl BridgeTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *Bridge) MatchByName(row1 *Bridge) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl BridgeTable) GetByName(row1 *Bridge) *Bridge {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl BridgeTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*Bridge)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl BridgeTable) FindOneMatchNonZeros(row1 *Bridge) *Bridge {
@@ -575,6 +614,14 @@ func (tbl *ControllerTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl ControllerTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl ControllerTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl ControllerTable) FindOneMatchNonZeros(row1 *Controller) *Controller {
 	for i := range tbl {
 		row := &tbl[i]
@@ -800,6 +847,40 @@ func (tbl *FlowSampleCollectorSetTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl FlowSampleCollectorSetTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *FlowSampleCollectorSet) MatchByIdBridge(row1 *FlowSampleCollectorSet) bool {
+	if !types.MatchInteger(row.Id, row1.Id) {
+		return false
+	}
+	if !types.MatchUuid(row.Bridge, row1.Bridge) {
+		return false
+	}
+	return true
+}
+
+func (tbl FlowSampleCollectorSetTable) GetByIdBridge(row1 *FlowSampleCollectorSet) *FlowSampleCollectorSet {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByIdBridge(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl FlowSampleCollectorSetTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*FlowSampleCollectorSet)
+	if !(types.IsZeroInteger(row1.Id) || types.IsZeroUuid(row1.Bridge)) {
+		if row := tbl.GetByIdBridge(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
 func (tbl FlowSampleCollectorSetTable) FindOneMatchNonZeros(row1 *FlowSampleCollectorSet) *FlowSampleCollectorSet {
 	for i := range tbl {
 		row := &tbl[i]
@@ -946,6 +1027,14 @@ func (tbl FlowTableTable) NewRow() types.IRow {
 func (tbl *FlowTableTable) AppendRow(irow types.IRow) {
 	row := irow.(*FlowTable)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl FlowTableTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl FlowTableTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl FlowTableTable) FindOneMatchNonZeros(row1 *FlowTable) *FlowTable {
@@ -1108,6 +1197,14 @@ func (tbl IPFIXTable) NewRow() types.IRow {
 func (tbl *IPFIXTable) AppendRow(irow types.IRow) {
 	row := irow.(*IPFIX)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl IPFIXTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl IPFIXTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl IPFIXTable) FindOneMatchNonZeros(row1 *IPFIX) *IPFIX {
@@ -1284,6 +1381,37 @@ func (tbl InterfaceTable) NewRow() types.IRow {
 func (tbl *InterfaceTable) AppendRow(irow types.IRow) {
 	row := irow.(*Interface)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl InterfaceTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *Interface) MatchByName(row1 *Interface) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl InterfaceTable) GetByName(row1 *Interface) *Interface {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl InterfaceTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*Interface)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl InterfaceTable) FindOneMatchNonZeros(row1 *Interface) *Interface {
@@ -1637,6 +1765,37 @@ func (tbl *ManagerTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl ManagerTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *Manager) MatchByTarget(row1 *Manager) bool {
+	if !types.MatchString(row.Target, row1.Target) {
+		return false
+	}
+	return true
+}
+
+func (tbl ManagerTable) GetByTarget(row1 *Manager) *Manager {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByTarget(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl ManagerTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*Manager)
+	if !(types.IsZeroString(row1.Target)) {
+		if row := tbl.GetByTarget(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
 func (tbl ManagerTable) FindOneMatchNonZeros(row1 *Manager) *Manager {
 	for i := range tbl {
 		row := &tbl[i]
@@ -1811,6 +1970,14 @@ func (tbl MirrorTable) NewRow() types.IRow {
 func (tbl *MirrorTable) AppendRow(irow types.IRow) {
 	row := irow.(*Mirror)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl MirrorTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl MirrorTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl MirrorTable) FindOneMatchNonZeros(row1 *Mirror) *Mirror {
@@ -2003,6 +2170,14 @@ func (tbl *NetFlowTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl NetFlowTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl NetFlowTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl NetFlowTable) FindOneMatchNonZeros(row1 *NetFlow) *NetFlow {
 	for i := range tbl {
 		row := &tbl[i]
@@ -2163,6 +2338,14 @@ func (tbl OpenVSwitchTable) NewRow() types.IRow {
 func (tbl *OpenVSwitchTable) AppendRow(irow types.IRow) {
 	row := irow.(*OpenVSwitch)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl OpenVSwitchTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl OpenVSwitchTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl OpenVSwitchTable) FindOneMatchNonZeros(row1 *OpenVSwitch) *OpenVSwitch {
@@ -2381,6 +2564,37 @@ func (tbl PortTable) NewRow() types.IRow {
 func (tbl *PortTable) AppendRow(irow types.IRow) {
 	row := irow.(*Port)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl PortTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *Port) MatchByName(row1 *Port) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl PortTable) GetByName(row1 *Port) *Port {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl PortTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*Port)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl PortTable) FindOneMatchNonZeros(row1 *Port) *Port {
@@ -2657,6 +2871,14 @@ func (tbl *QoSTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl QoSTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl QoSTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl QoSTable) FindOneMatchNonZeros(row1 *QoS) *QoS {
 	for i := range tbl {
 		row := &tbl[i]
@@ -2805,6 +3027,14 @@ func (tbl *QueueTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl QueueTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl QueueTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl QueueTable) FindOneMatchNonZeros(row1 *Queue) *Queue {
 	for i := range tbl {
 		row := &tbl[i]
@@ -2944,6 +3174,14 @@ func (tbl SSLTable) NewRow() types.IRow {
 func (tbl *SSLTable) AppendRow(irow types.IRow) {
 	row := irow.(*SSL)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl SSLTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl SSLTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl SSLTable) FindOneMatchNonZeros(row1 *SSL) *SSL {
@@ -3099,6 +3337,14 @@ func (tbl SFlowTable) NewRow() types.IRow {
 func (tbl *SFlowTable) AppendRow(irow types.IRow) {
 	row := irow.(*SFlow)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl SFlowTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl SFlowTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl SFlowTable) FindOneMatchNonZeros(row1 *SFlow) *SFlow {

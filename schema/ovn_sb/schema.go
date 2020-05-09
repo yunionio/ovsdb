@@ -182,6 +182,37 @@ func (tbl *AddressSetTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl AddressSetTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *AddressSet) MatchByName(row1 *AddressSet) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl AddressSetTable) GetByName(row1 *AddressSet) *AddressSet {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl AddressSetTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*AddressSet)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
 func (tbl AddressSetTable) FindOneMatchNonZeros(row1 *AddressSet) *AddressSet {
 	for i := range tbl {
 		row := &tbl[i]
@@ -300,6 +331,37 @@ func (tbl ChassisTable) NewRow() types.IRow {
 func (tbl *ChassisTable) AppendRow(irow types.IRow) {
 	row := irow.(*Chassis)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl ChassisTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *Chassis) MatchByName(row1 *Chassis) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl ChassisTable) GetByName(row1 *Chassis) *Chassis {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl ChassisTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*Chassis)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl ChassisTable) FindOneMatchNonZeros(row1 *Chassis) *Chassis {
@@ -462,6 +524,37 @@ func (tbl ConnectionTable) NewRow() types.IRow {
 func (tbl *ConnectionTable) AppendRow(irow types.IRow) {
 	row := irow.(*Connection)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl ConnectionTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *Connection) MatchByTarget(row1 *Connection) bool {
+	if !types.MatchString(row.Target, row1.Target) {
+		return false
+	}
+	return true
+}
+
+func (tbl ConnectionTable) GetByTarget(row1 *Connection) *Connection {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByTarget(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl ConnectionTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*Connection)
+	if !(types.IsZeroString(row1.Target)) {
+		if row := tbl.GetByTarget(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl ConnectionTable) FindOneMatchNonZeros(row1 *Connection) *Connection {
@@ -647,6 +740,14 @@ func (tbl *DHCPOptionsTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl DHCPOptionsTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl DHCPOptionsTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl DHCPOptionsTable) FindOneMatchNonZeros(row1 *DHCPOptions) *DHCPOptions {
 	for i := range tbl {
 		row := &tbl[i]
@@ -774,6 +875,14 @@ func (tbl *DHCPv6OptionsTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl DHCPv6OptionsTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl DHCPv6OptionsTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl DHCPv6OptionsTable) FindOneMatchNonZeros(row1 *DHCPv6Options) *DHCPv6Options {
 	for i := range tbl {
 		row := &tbl[i]
@@ -899,6 +1008,14 @@ func (tbl DNSTable) NewRow() types.IRow {
 func (tbl *DNSTable) AppendRow(irow types.IRow) {
 	row := irow.(*DNS)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl DNSTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl DNSTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl DNSTable) FindOneMatchNonZeros(row1 *DNS) *DNS {
@@ -1042,6 +1159,37 @@ func (tbl *DatapathBindingTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl DatapathBindingTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *DatapathBinding) MatchByTunnelKey(row1 *DatapathBinding) bool {
+	if !types.MatchInteger(row.TunnelKey, row1.TunnelKey) {
+		return false
+	}
+	return true
+}
+
+func (tbl DatapathBindingTable) GetByTunnelKey(row1 *DatapathBinding) *DatapathBinding {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByTunnelKey(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl DatapathBindingTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*DatapathBinding)
+	if !(types.IsZeroInteger(row1.TunnelKey)) {
+		if row := tbl.GetByTunnelKey(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
 func (tbl DatapathBindingTable) FindOneMatchNonZeros(row1 *DatapathBinding) *DatapathBinding {
 	for i := range tbl {
 		row := &tbl[i]
@@ -1176,6 +1324,14 @@ func (tbl *EncapTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl EncapTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl EncapTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl EncapTable) FindOneMatchNonZeros(row1 *Encap) *Encap {
 	for i := range tbl {
 		row := &tbl[i]
@@ -1308,6 +1464,37 @@ func (tbl GatewayChassisTable) NewRow() types.IRow {
 func (tbl *GatewayChassisTable) AppendRow(irow types.IRow) {
 	row := irow.(*GatewayChassis)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl GatewayChassisTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *GatewayChassis) MatchByName(row1 *GatewayChassis) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl GatewayChassisTable) GetByName(row1 *GatewayChassis) *GatewayChassis {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl GatewayChassisTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*GatewayChassis)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl GatewayChassisTable) FindOneMatchNonZeros(row1 *GatewayChassis) *GatewayChassis {
@@ -1463,6 +1650,14 @@ func (tbl LogicalFlowTable) NewRow() types.IRow {
 func (tbl *LogicalFlowTable) AppendRow(irow types.IRow) {
 	row := irow.(*LogicalFlow)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl LogicalFlowTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl LogicalFlowTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl LogicalFlowTable) FindOneMatchNonZeros(row1 *LogicalFlow) *LogicalFlow {
@@ -1634,6 +1829,40 @@ func (tbl *MACBindingTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl MACBindingTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *MACBinding) MatchByLogicalPortIp(row1 *MACBinding) bool {
+	if !types.MatchString(row.LogicalPort, row1.LogicalPort) {
+		return false
+	}
+	if !types.MatchString(row.Ip, row1.Ip) {
+		return false
+	}
+	return true
+}
+
+func (tbl MACBindingTable) GetByLogicalPortIp(row1 *MACBinding) *MACBinding {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByLogicalPortIp(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl MACBindingTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*MACBinding)
+	if !(types.IsZeroString(row1.LogicalPort) || types.IsZeroString(row1.Ip)) {
+		if row := tbl.GetByLogicalPortIp(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
 func (tbl MACBindingTable) FindOneMatchNonZeros(row1 *MACBinding) *MACBinding {
 	for i := range tbl {
 		row := &tbl[i]
@@ -1768,6 +1997,65 @@ func (tbl *MulticastGroupTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl MulticastGroupTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *MulticastGroup) MatchByDatapathTunnelKey(row1 *MulticastGroup) bool {
+	if !types.MatchUuid(row.Datapath, row1.Datapath) {
+		return false
+	}
+	if !types.MatchInteger(row.TunnelKey, row1.TunnelKey) {
+		return false
+	}
+	return true
+}
+
+func (tbl MulticastGroupTable) GetByDatapathTunnelKey(row1 *MulticastGroup) *MulticastGroup {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByDatapathTunnelKey(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (row *MulticastGroup) MatchByDatapathName(row1 *MulticastGroup) bool {
+	if !types.MatchUuid(row.Datapath, row1.Datapath) {
+		return false
+	}
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl MulticastGroupTable) GetByDatapathName(row1 *MulticastGroup) *MulticastGroup {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByDatapathName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl MulticastGroupTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*MulticastGroup)
+	if !(types.IsZeroUuid(row1.Datapath) || types.IsZeroInteger(row1.TunnelKey)) {
+		if row := tbl.GetByDatapathTunnelKey(row1); row != nil {
+			return row
+		}
+	}
+	if !(types.IsZeroUuid(row1.Datapath) || types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByDatapathName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
 func (tbl MulticastGroupTable) FindOneMatchNonZeros(row1 *MulticastGroup) *MulticastGroup {
 	for i := range tbl {
 		row := &tbl[i]
@@ -1900,6 +2188,62 @@ func (tbl PortBindingTable) NewRow() types.IRow {
 func (tbl *PortBindingTable) AppendRow(irow types.IRow) {
 	row := irow.(*PortBinding)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl PortBindingTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *PortBinding) MatchByDatapathTunnelKey(row1 *PortBinding) bool {
+	if !types.MatchUuid(row.Datapath, row1.Datapath) {
+		return false
+	}
+	if !types.MatchInteger(row.TunnelKey, row1.TunnelKey) {
+		return false
+	}
+	return true
+}
+
+func (tbl PortBindingTable) GetByDatapathTunnelKey(row1 *PortBinding) *PortBinding {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByDatapathTunnelKey(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (row *PortBinding) MatchByLogicalPort(row1 *PortBinding) bool {
+	if !types.MatchString(row.LogicalPort, row1.LogicalPort) {
+		return false
+	}
+	return true
+}
+
+func (tbl PortBindingTable) GetByLogicalPort(row1 *PortBinding) *PortBinding {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByLogicalPort(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl PortBindingTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*PortBinding)
+	if !(types.IsZeroUuid(row1.Datapath) || types.IsZeroInteger(row1.TunnelKey)) {
+		if row := tbl.GetByDatapathTunnelKey(row1); row != nil {
+			return row
+		}
+	}
+	if !(types.IsZeroString(row1.LogicalPort)) {
+		if row := tbl.GetByLogicalPort(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl PortBindingTable) FindOneMatchNonZeros(row1 *PortBinding) *PortBinding {
@@ -2106,6 +2450,14 @@ func (tbl *RBACPermissionTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl RBACPermissionTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl RBACPermissionTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl RBACPermissionTable) FindOneMatchNonZeros(row1 *RBACPermission) *RBACPermission {
 	for i := range tbl {
 		row := &tbl[i]
@@ -2240,6 +2592,14 @@ func (tbl *RBACRoleTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl RBACRoleTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl RBACRoleTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl RBACRoleTable) FindOneMatchNonZeros(row1 *RBACRole) *RBACRole {
 	for i := range tbl {
 		row := &tbl[i]
@@ -2358,6 +2718,14 @@ func (tbl SBGlobalTable) NewRow() types.IRow {
 func (tbl *SBGlobalTable) AppendRow(irow types.IRow) {
 	row := irow.(*SBGlobal)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl SBGlobalTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl SBGlobalTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl SBGlobalTable) FindOneMatchNonZeros(row1 *SBGlobal) *SBGlobal {
@@ -2506,6 +2874,14 @@ func (tbl SSLTable) NewRow() types.IRow {
 func (tbl *SSLTable) AppendRow(irow types.IRow) {
 	row := irow.(*SSL)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl SSLTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl SSLTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl SSLTable) FindOneMatchNonZeros(row1 *SSL) *SSL {

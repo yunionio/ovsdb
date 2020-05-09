@@ -190,6 +190,37 @@ func (tbl *ACLTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl ACLTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *ACL) MatchByAclName(row1 *ACL) bool {
+	if !types.MatchString(row.AclName, row1.AclName) {
+		return false
+	}
+	return true
+}
+
+func (tbl ACLTable) GetByAclName(row1 *ACL) *ACL {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByAclName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl ACLTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*ACL)
+	if !(types.IsZeroString(row1.AclName)) {
+		if row := tbl.GetByAclName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
 func (tbl ACLTable) FindOneMatchNonZeros(row1 *ACL) *ACL {
 	for i := range tbl {
 		row := &tbl[i]
@@ -315,6 +346,14 @@ func (tbl ACLEntryTable) NewRow() types.IRow {
 func (tbl *ACLEntryTable) AppendRow(irow types.IRow) {
 	row := irow.(*ACLEntry)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl ACLEntryTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl ACLEntryTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl ACLEntryTable) FindOneMatchNonZeros(row1 *ACLEntry) *ACLEntry {
@@ -563,6 +602,14 @@ func (tbl *ArpSourcesLocalTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl ArpSourcesLocalTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl ArpSourcesLocalTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl ArpSourcesLocalTable) FindOneMatchNonZeros(row1 *ArpSourcesLocal) *ArpSourcesLocal {
 	for i := range tbl {
 		row := &tbl[i]
@@ -683,6 +730,14 @@ func (tbl *ArpSourcesRemoteTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl ArpSourcesRemoteTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl ArpSourcesRemoteTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl ArpSourcesRemoteTable) FindOneMatchNonZeros(row1 *ArpSourcesRemote) *ArpSourcesRemote {
 	for i := range tbl {
 		row := &tbl[i]
@@ -801,6 +856,14 @@ func (tbl GlobalTable) NewRow() types.IRow {
 func (tbl *GlobalTable) AppendRow(irow types.IRow) {
 	row := irow.(*Global)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl GlobalTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl GlobalTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl GlobalTable) FindOneMatchNonZeros(row1 *Global) *Global {
@@ -928,6 +991,14 @@ func (tbl LogicalBindingStatsTable) NewRow() types.IRow {
 func (tbl *LogicalBindingStatsTable) AppendRow(irow types.IRow) {
 	row := irow.(*LogicalBindingStats)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl LogicalBindingStatsTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl LogicalBindingStatsTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl LogicalBindingStatsTable) FindOneMatchNonZeros(row1 *LogicalBindingStats) *LogicalBindingStats {
@@ -1062,6 +1133,37 @@ func (tbl LogicalRouterTable) NewRow() types.IRow {
 func (tbl *LogicalRouterTable) AppendRow(irow types.IRow) {
 	row := irow.(*LogicalRouter)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl LogicalRouterTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *LogicalRouter) MatchByName(row1 *LogicalRouter) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl LogicalRouterTable) GetByName(row1 *LogicalRouter) *LogicalRouter {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl LogicalRouterTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*LogicalRouter)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl LogicalRouterTable) FindOneMatchNonZeros(row1 *LogicalRouter) *LogicalRouter {
@@ -1219,6 +1321,37 @@ func (tbl *LogicalSwitchTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl LogicalSwitchTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *LogicalSwitch) MatchByName(row1 *LogicalSwitch) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl LogicalSwitchTable) GetByName(row1 *LogicalSwitch) *LogicalSwitch {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl LogicalSwitchTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*LogicalSwitch)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
 func (tbl LogicalSwitchTable) FindOneMatchNonZeros(row1 *LogicalSwitch) *LogicalSwitch {
 	for i := range tbl {
 		row := &tbl[i]
@@ -1358,6 +1491,37 @@ func (tbl ManagerTable) NewRow() types.IRow {
 func (tbl *ManagerTable) AppendRow(irow types.IRow) {
 	row := irow.(*Manager)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl ManagerTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *Manager) MatchByTarget(row1 *Manager) bool {
+	if !types.MatchString(row.Target, row1.Target) {
+		return false
+	}
+	return true
+}
+
+func (tbl ManagerTable) GetByTarget(row1 *Manager) *Manager {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByTarget(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl ManagerTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*Manager)
+	if !(types.IsZeroString(row1.Target)) {
+		if row := tbl.GetByTarget(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl ManagerTable) FindOneMatchNonZeros(row1 *Manager) *Manager {
@@ -1508,6 +1672,14 @@ func (tbl *McastMacsLocalTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl McastMacsLocalTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl McastMacsLocalTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl McastMacsLocalTable) FindOneMatchNonZeros(row1 *McastMacsLocal) *McastMacsLocal {
 	for i := range tbl {
 		row := &tbl[i]
@@ -1640,6 +1812,14 @@ func (tbl McastMacsRemoteTable) NewRow() types.IRow {
 func (tbl *McastMacsRemoteTable) AppendRow(irow types.IRow) {
 	row := irow.(*McastMacsRemote)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl McastMacsRemoteTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl McastMacsRemoteTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl McastMacsRemoteTable) FindOneMatchNonZeros(row1 *McastMacsRemote) *McastMacsRemote {
@@ -1776,6 +1956,43 @@ func (tbl *PhysicalLocatorTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl PhysicalLocatorTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *PhysicalLocator) MatchByEncapsulationTypeDstIpTunnelKey(row1 *PhysicalLocator) bool {
+	if !types.MatchString(row.EncapsulationType, row1.EncapsulationType) {
+		return false
+	}
+	if !types.MatchString(row.DstIp, row1.DstIp) {
+		return false
+	}
+	if !types.MatchIntegerOptional(row.TunnelKey, row1.TunnelKey) {
+		return false
+	}
+	return true
+}
+
+func (tbl PhysicalLocatorTable) GetByEncapsulationTypeDstIpTunnelKey(row1 *PhysicalLocator) *PhysicalLocator {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByEncapsulationTypeDstIpTunnelKey(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl PhysicalLocatorTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*PhysicalLocator)
+	if !(types.IsZeroString(row1.EncapsulationType) || types.IsZeroString(row1.DstIp) || types.IsZeroIntegerOptional(row1.TunnelKey)) {
+		if row := tbl.GetByEncapsulationTypeDstIpTunnelKey(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
 func (tbl PhysicalLocatorTable) FindOneMatchNonZeros(row1 *PhysicalLocator) *PhysicalLocator {
 	for i := range tbl {
 		row := &tbl[i]
@@ -1903,6 +2120,14 @@ func (tbl *PhysicalLocatorSetTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl PhysicalLocatorSetTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl PhysicalLocatorSetTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl PhysicalLocatorSetTable) FindOneMatchNonZeros(row1 *PhysicalLocatorSet) *PhysicalLocatorSet {
 	for i := range tbl {
 		row := &tbl[i]
@@ -2014,6 +2239,14 @@ func (tbl PhysicalPortTable) NewRow() types.IRow {
 func (tbl *PhysicalPortTable) AppendRow(irow types.IRow) {
 	row := irow.(*PhysicalPort)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl PhysicalPortTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl PhysicalPortTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl PhysicalPortTable) FindOneMatchNonZeros(row1 *PhysicalPort) *PhysicalPort {
@@ -2169,6 +2402,37 @@ func (tbl PhysicalSwitchTable) NewRow() types.IRow {
 func (tbl *PhysicalSwitchTable) AppendRow(irow types.IRow) {
 	row := irow.(*PhysicalSwitch)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl PhysicalSwitchTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *PhysicalSwitch) MatchByName(row1 *PhysicalSwitch) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl PhysicalSwitchTable) GetByName(row1 *PhysicalSwitch) *PhysicalSwitch {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl PhysicalSwitchTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*PhysicalSwitch)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl PhysicalSwitchTable) FindOneMatchNonZeros(row1 *PhysicalSwitch) *PhysicalSwitch {
@@ -2333,6 +2597,14 @@ func (tbl *TunnelTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl TunnelTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl TunnelTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl TunnelTable) FindOneMatchNonZeros(row1 *Tunnel) *Tunnel {
 	for i := range tbl {
 		row := &tbl[i]
@@ -2481,6 +2753,14 @@ func (tbl *UcastMacsLocalTable) AppendRow(irow types.IRow) {
 	*tbl = append(*tbl, *row)
 }
 
+func (tbl UcastMacsLocalTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl UcastMacsLocalTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
 func (tbl UcastMacsLocalTable) FindOneMatchNonZeros(row1 *UcastMacsLocal) *UcastMacsLocal {
 	for i := range tbl {
 		row := &tbl[i]
@@ -2613,6 +2893,14 @@ func (tbl UcastMacsRemoteTable) NewRow() types.IRow {
 func (tbl *UcastMacsRemoteTable) AppendRow(irow types.IRow) {
 	row := irow.(*UcastMacsRemote)
 	*tbl = append(*tbl, *row)
+}
+
+func (tbl UcastMacsRemoteTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl UcastMacsRemoteTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
 }
 
 func (tbl UcastMacsRemoteTable) FindOneMatchNonZeros(row1 *UcastMacsRemote) *UcastMacsRemote {
