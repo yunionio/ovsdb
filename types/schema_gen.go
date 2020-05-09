@@ -208,7 +208,7 @@ func (tbl *Table) gen(w writer) {
 	w.Writef(`func (row *%s) MatchNonZeros(row1 *%s) bool {`, rowTyp, rowTyp)
 	for _, colName := range tbl.OrderedColumnNames() {
 		col := tbl.Columns[colName]
-		w.Writef(`if !types.%s(row.%s, row1.%s) {`, col.matchFuncName(), col.goField(), col.goField())
+		w.Writef(`if !types.%s(row.%s, row1.%s) {`, col.matchNonZeroFuncName(), col.goField(), col.goField())
 		w.Writef(`	return false`)
 		w.Writef(`}`)
 	}
@@ -357,6 +357,6 @@ func (col *Column) cmdArgsFuncName() string {
 	return "OvsdbCmdArgs" + col.funcNameSuffix()
 }
 
-func (col *Column) matchFuncName() string {
+func (col *Column) matchNonZeroFuncName() string {
 	return "Match" + col.funcNameSuffix() + "IfNonZero"
 }
