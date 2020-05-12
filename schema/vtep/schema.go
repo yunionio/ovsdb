@@ -31,6 +31,8 @@ type HardwareVtep struct {
 	UcastMacsRemote     UcastMacsRemoteTable
 }
 
+var _ types.IDatabase = &HardwareVtep{}
+
 func (db HardwareVtep) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 	switch row := irow.(type) {
 	case *ACL:

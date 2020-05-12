@@ -30,6 +30,8 @@ type OVNSouthbound struct {
 	SSL             SSLTable
 }
 
+var _ types.IDatabase = &OVNSouthbound{}
+
 func (db OVNSouthbound) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 	switch row := irow.(type) {
 	case *AddressSet:

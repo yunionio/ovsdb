@@ -29,6 +29,8 @@ type OvsdbOpenVSwitch struct {
 	SFlow                  SFlowTable
 }
 
+var _ types.IDatabase = &OvsdbOpenVSwitch{}
+
 func (db OvsdbOpenVSwitch) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 	switch row := irow.(type) {
 	case *AutoAttach:
