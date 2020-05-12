@@ -36,108 +36,164 @@ func (db OVNNorthbound) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *AddressSet:
 		if r := db.AddressSet.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Connection:
 		if r := db.Connection.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *DHCPOptions:
 		if r := db.DHCPOptions.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *DNS:
 		if r := db.DNS.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *GatewayChassis:
 		if r := db.GatewayChassis.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LoadBalancer:
 		if r := db.LoadBalancer.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LogicalRouter:
 		if r := db.LogicalRouter.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LogicalRouterPort:
 		if r := db.LogicalRouterPort.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LogicalRouterStaticRoute:
 		if r := db.LogicalRouterStaticRoute.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LogicalSwitch:
 		if r := db.LogicalSwitch.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LogicalSwitchPort:
 		if r := db.LogicalSwitchPort.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *NAT:
 		if r := db.NAT.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *NBGlobal:
 		if r := db.NBGlobal.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *QoS:
 		if r := db.QoS.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *SSL:
 		if r := db.SSL.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	}
+	panic(types.ErrBadType)
+}
+
+func (db OVNNorthbound) FindOneMatchByAnyIndex(irow types.IRow) types.IRow {
+	switch row := irow.(type) {
+	case *ACL:
+		if r := db.ACL.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *AddressSet:
+		if r := db.AddressSet.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Connection:
+		if r := db.Connection.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *DHCPOptions:
+		if r := db.DHCPOptions.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *DNS:
+		if r := db.DNS.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *GatewayChassis:
+		if r := db.GatewayChassis.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LoadBalancer:
+		if r := db.LoadBalancer.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LogicalRouter:
+		if r := db.LogicalRouter.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LogicalRouterPort:
+		if r := db.LogicalRouterPort.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LogicalRouterStaticRoute:
+		if r := db.LogicalRouterStaticRoute.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LogicalSwitch:
+		if r := db.LogicalSwitch.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LogicalSwitchPort:
+		if r := db.LogicalSwitchPort.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *NAT:
+		if r := db.NAT.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *NBGlobal:
+		if r := db.NBGlobal.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *QoS:
+		if r := db.QoS.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *SSL:
+		if r := db.SSL.OvsdbGetByAnyIndex(row); r != nil {
 			return r
 		}
 		return nil

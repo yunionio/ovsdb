@@ -36,108 +36,164 @@ func (db OvsdbOpenVSwitch) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Bridge:
 		if r := db.Bridge.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Controller:
 		if r := db.Controller.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *FlowSampleCollectorSet:
 		if r := db.FlowSampleCollectorSet.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *FlowTable:
 		if r := db.FlowTable.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *IPFIX:
 		if r := db.IPFIX.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Interface:
 		if r := db.Interface.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Manager:
 		if r := db.Manager.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Mirror:
 		if r := db.Mirror.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *NetFlow:
 		if r := db.NetFlow.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *OpenVSwitch:
 		if r := db.OpenVSwitch.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Port:
 		if r := db.Port.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *QoS:
 		if r := db.QoS.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Queue:
 		if r := db.Queue.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *SSL:
 		if r := db.SSL.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *SFlow:
 		if r := db.SFlow.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	}
+	panic(types.ErrBadType)
+}
+
+func (db OvsdbOpenVSwitch) FindOneMatchByAnyIndex(irow types.IRow) types.IRow {
+	switch row := irow.(type) {
+	case *AutoAttach:
+		if r := db.AutoAttach.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Bridge:
+		if r := db.Bridge.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Controller:
+		if r := db.Controller.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *FlowSampleCollectorSet:
+		if r := db.FlowSampleCollectorSet.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *FlowTable:
+		if r := db.FlowTable.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *IPFIX:
+		if r := db.IPFIX.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Interface:
+		if r := db.Interface.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Manager:
+		if r := db.Manager.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Mirror:
+		if r := db.Mirror.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *NetFlow:
+		if r := db.NetFlow.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *OpenVSwitch:
+		if r := db.OpenVSwitch.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Port:
+		if r := db.Port.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *QoS:
+		if r := db.QoS.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Queue:
+		if r := db.Queue.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *SSL:
+		if r := db.SSL.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *SFlow:
+		if r := db.SFlow.OvsdbGetByAnyIndex(row); r != nil {
 			return r
 		}
 		return nil

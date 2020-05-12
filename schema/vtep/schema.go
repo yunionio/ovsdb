@@ -38,122 +38,184 @@ func (db HardwareVtep) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *ACLEntry:
 		if r := db.ACLEntry.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *ArpSourcesLocal:
 		if r := db.ArpSourcesLocal.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *ArpSourcesRemote:
 		if r := db.ArpSourcesRemote.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Global:
 		if r := db.Global.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LogicalBindingStats:
 		if r := db.LogicalBindingStats.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LogicalRouter:
 		if r := db.LogicalRouter.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LogicalSwitch:
 		if r := db.LogicalSwitch.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Manager:
 		if r := db.Manager.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *McastMacsLocal:
 		if r := db.McastMacsLocal.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *McastMacsRemote:
 		if r := db.McastMacsRemote.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *PhysicalLocator:
 		if r := db.PhysicalLocator.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *PhysicalLocatorSet:
 		if r := db.PhysicalLocatorSet.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *PhysicalPort:
 		if r := db.PhysicalPort.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *PhysicalSwitch:
 		if r := db.PhysicalSwitch.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Tunnel:
 		if r := db.Tunnel.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *UcastMacsLocal:
 		if r := db.UcastMacsLocal.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *UcastMacsRemote:
 		if r := db.UcastMacsRemote.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	}
+	panic(types.ErrBadType)
+}
+
+func (db HardwareVtep) FindOneMatchByAnyIndex(irow types.IRow) types.IRow {
+	switch row := irow.(type) {
+	case *ACL:
+		if r := db.ACL.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *ACLEntry:
+		if r := db.ACLEntry.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *ArpSourcesLocal:
+		if r := db.ArpSourcesLocal.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *ArpSourcesRemote:
+		if r := db.ArpSourcesRemote.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Global:
+		if r := db.Global.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LogicalBindingStats:
+		if r := db.LogicalBindingStats.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LogicalRouter:
+		if r := db.LogicalRouter.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LogicalSwitch:
+		if r := db.LogicalSwitch.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Manager:
+		if r := db.Manager.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *McastMacsLocal:
+		if r := db.McastMacsLocal.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *McastMacsRemote:
+		if r := db.McastMacsRemote.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *PhysicalLocator:
+		if r := db.PhysicalLocator.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *PhysicalLocatorSet:
+		if r := db.PhysicalLocatorSet.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *PhysicalPort:
+		if r := db.PhysicalPort.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *PhysicalSwitch:
+		if r := db.PhysicalSwitch.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Tunnel:
+		if r := db.Tunnel.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *UcastMacsLocal:
+		if r := db.UcastMacsLocal.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *UcastMacsRemote:
+		if r := db.UcastMacsRemote.OvsdbGetByAnyIndex(row); r != nil {
 			return r
 		}
 		return nil

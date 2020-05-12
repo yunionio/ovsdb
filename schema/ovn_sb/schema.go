@@ -37,115 +37,174 @@ func (db OVNSouthbound) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Chassis:
 		if r := db.Chassis.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Connection:
 		if r := db.Connection.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *DHCPOptions:
 		if r := db.DHCPOptions.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *DHCPv6Options:
 		if r := db.DHCPv6Options.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *DNS:
 		if r := db.DNS.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *DatapathBinding:
 		if r := db.DatapathBinding.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *Encap:
 		if r := db.Encap.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *GatewayChassis:
 		if r := db.GatewayChassis.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *LogicalFlow:
 		if r := db.LogicalFlow.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *MACBinding:
 		if r := db.MACBinding.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *MulticastGroup:
 		if r := db.MulticastGroup.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *PortBinding:
 		if r := db.PortBinding.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *RBACPermission:
 		if r := db.RBACPermission.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *RBACRole:
 		if r := db.RBACRole.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *SBGlobal:
 		if r := db.SBGlobal.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
-	}
-	switch row := irow.(type) {
 	case *SSL:
 		if r := db.SSL.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	}
+	panic(types.ErrBadType)
+}
+
+func (db OVNSouthbound) FindOneMatchByAnyIndex(irow types.IRow) types.IRow {
+	switch row := irow.(type) {
+	case *AddressSet:
+		if r := db.AddressSet.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Chassis:
+		if r := db.Chassis.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Connection:
+		if r := db.Connection.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *DHCPOptions:
+		if r := db.DHCPOptions.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *DHCPv6Options:
+		if r := db.DHCPv6Options.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *DNS:
+		if r := db.DNS.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *DatapathBinding:
+		if r := db.DatapathBinding.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *Encap:
+		if r := db.Encap.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *GatewayChassis:
+		if r := db.GatewayChassis.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *LogicalFlow:
+		if r := db.LogicalFlow.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *MACBinding:
+		if r := db.MACBinding.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *MulticastGroup:
+		if r := db.MulticastGroup.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *PortBinding:
+		if r := db.PortBinding.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *RBACPermission:
+		if r := db.RBACPermission.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *RBACRole:
+		if r := db.RBACRole.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *SBGlobal:
+		if r := db.SBGlobal.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *SSL:
+		if r := db.SSL.OvsdbGetByAnyIndex(row); r != nil {
 			return r
 		}
 		return nil
