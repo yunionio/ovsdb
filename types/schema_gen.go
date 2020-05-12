@@ -49,20 +49,39 @@ func (sch *Schema) gen(w writer) {
 	w.Writef(``)
 
 	w.Writef(`func (db %s) FindOneMatchNonZeros(irow types.IRow) types.IRow {`, schTyp)
+	w.Writef(`	switch row := irow.(type) {`)
 	for _, name := range sch.OrderedTableNames() {
 		var (
 			tbl       = sch.Tables[name]
 			rowTyp    = tbl.rowTypeName()
 			fieldName = tbl.tblField()
 		)
-		w.Writef(`switch row := irow.(type) {`)
 		w.Writef(`case *%s:`, rowTyp)
 		w.Writef(`	if r := db.%s.FindOneMatchNonZeros(row); r != nil {`, fieldName)
 		w.Writef(`		return r`)
 		w.Writef(`	}`)
 		w.Writef(`	return nil`)
-		w.Writef(`}`)
 	}
+	w.Writef(`	}`)
+	w.Writef(`	panic(types.ErrBadType)`)
+	w.Writef(`}`)
+	w.Writef(``)
+
+	w.Writef(`func (db %s) FindOneMatchByAnyIndex(irow types.IRow) types.IRow {`, schTyp)
+	w.Writef(`	switch row := irow.(type) {`)
+	for _, name := range sch.OrderedTableNames() {
+		var (
+			tbl       = sch.Tables[name]
+			rowTyp    = tbl.rowTypeName()
+			fieldName = tbl.tblField()
+		)
+		w.Writef(`case *%s:`, rowTyp)
+		w.Writef(`	if r := db.%s.OvsdbGetByAnyIndex(row); r != nil {`, fieldName)
+		w.Writef(`		return r`)
+		w.Writef(`	}`)
+		w.Writef(`	return nil`)
+	}
+	w.Writef(`	}`)
 	w.Writef(`	panic(types.ErrBadType)`)
 	w.Writef(`}`)
 	w.Writef(``)
