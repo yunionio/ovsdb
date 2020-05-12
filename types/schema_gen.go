@@ -46,6 +46,7 @@ func (sch *Schema) gen(w writer) {
 		w.Writef(`%s %s`, fieldName, tblTyp)
 	}
 	w.Writef(`}`)
+	w.Writef(`var _ types.IDatabase = &%s{}`, schTyp)
 	w.Writef(``)
 
 	w.Writef(`func (db %s) FindOneMatchNonZeros(irow types.IRow) types.IRow {`, schTyp)

@@ -25,3 +25,8 @@ type ITable interface {
 	NewRow() IRow
 	AppendRow(IRow)
 }
+
+type IDatabase interface {
+	FindOneMatchNonZeros(IRow) IRow
+	FindOneMatchByAnyIndex(IRow) IRow
+}
