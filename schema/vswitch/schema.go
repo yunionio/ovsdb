@@ -613,6 +613,94 @@ func (row *Bridge) MatchNonZeros(row1 *Bridge) bool {
 	return true
 }
 
+func (tbl BridgeTable) FindAutoAttachReferrer_auto_attach(refUuid string) (r []*Bridge) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.AutoAttach != nil && *row.AutoAttach == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl BridgeTable) FindControllerReferrer_controller(refUuid string) (r []*Bridge) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Controller {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl BridgeTable) FindFlowTableReferrer2_flow_tables(refUuid string) (r []*Bridge) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.FlowTables {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl BridgeTable) FindIPFIXReferrer_ipfix(refUuid string) (r []*Bridge) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Ipfix != nil && *row.Ipfix == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl BridgeTable) FindMirrorReferrer_mirrors(refUuid string) (r []*Bridge) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Mirrors {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl BridgeTable) FindNetFlowReferrer_netflow(refUuid string) (r []*Bridge) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Netflow != nil && *row.Netflow == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl BridgeTable) FindPortReferrer_ports(refUuid string) (r []*Bridge) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Ports {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl BridgeTable) FindSFlowReferrer_sflow(refUuid string) (r []*Bridge) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Sflow != nil && *row.Sflow == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
 func (row *Bridge) HasExternalIds() bool {
 	return true
 }
@@ -1026,6 +1114,26 @@ func (row *FlowSampleCollectorSet) MatchNonZeros(row1 *FlowSampleCollectorSet) b
 		return false
 	}
 	return true
+}
+
+func (tbl FlowSampleCollectorSetTable) FindBridgeReferrer_bridge(refUuid string) (r []*FlowSampleCollectorSet) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Bridge == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl FlowSampleCollectorSetTable) FindIPFIXReferrer_ipfix(refUuid string) (r []*FlowSampleCollectorSet) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Ipfix != nil && *row.Ipfix == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
 }
 
 func (row *FlowSampleCollectorSet) HasExternalIds() bool {
@@ -2169,6 +2277,40 @@ func (row *Mirror) MatchNonZeros(row1 *Mirror) bool {
 	return true
 }
 
+func (tbl MirrorTable) FindPortReferrer_output_port(refUuid string) (r []*Mirror) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.OutputPort != nil && *row.OutputPort == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl MirrorTable) FindPortReferrer_select_dst_port(refUuid string) (r []*Mirror) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.SelectDstPort {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl MirrorTable) FindPortReferrer_select_src_port(refUuid string) (r []*Mirror) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.SelectSrcPort {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
 func (row *Mirror) HasExternalIds() bool {
 	return true
 }
@@ -2565,6 +2707,40 @@ func (row *OpenVSwitch) MatchNonZeros(row1 *OpenVSwitch) bool {
 	return true
 }
 
+func (tbl OpenVSwitchTable) FindBridgeReferrer_bridges(refUuid string) (r []*OpenVSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Bridges {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl OpenVSwitchTable) FindManagerReferrer_manager_options(refUuid string) (r []*OpenVSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.ManagerOptions {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl OpenVSwitchTable) FindSSLReferrer_ssl(refUuid string) (r []*OpenVSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Ssl != nil && *row.Ssl == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
 func (row *OpenVSwitch) HasExternalIds() bool {
 	return true
 }
@@ -2870,6 +3046,28 @@ func (row *Port) MatchNonZeros(row1 *Port) bool {
 	return true
 }
 
+func (tbl PortTable) FindInterfaceReferrer_interfaces(refUuid string) (r []*Port) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Interfaces {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl PortTable) FindQoSReferrer_qos(refUuid string) (r []*Port) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Qos != nil && *row.Qos == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
 func (row *Port) HasExternalIds() bool {
 	return true
 }
@@ -3024,6 +3222,18 @@ func (row *QoS) MatchNonZeros(row1 *QoS) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl QoSTable) FindQueueReferrer2_queues(refUuid string) (r []*QoS) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Queues {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
 }
 
 func (row *QoS) HasExternalIds() bool {

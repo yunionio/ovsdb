@@ -528,6 +528,18 @@ func (row *Chassis) MatchNonZeros(row1 *Chassis) bool {
 	return true
 }
 
+func (tbl ChassisTable) FindEncapReferrer_encaps(refUuid string) (r []*Chassis) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Encaps {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
 func (row *Chassis) HasExternalIds() bool {
 	return true
 }
@@ -1161,6 +1173,18 @@ func (row *DNS) MatchNonZeros(row1 *DNS) bool {
 	return true
 }
 
+func (tbl DNSTable) FindDatapathBindingReferrer_datapaths(refUuid string) (r []*DNS) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Datapaths {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
 func (row *DNS) HasExternalIds() bool {
 	return true
 }
@@ -1654,6 +1678,16 @@ func (row *GatewayChassis) MatchNonZeros(row1 *GatewayChassis) bool {
 	return true
 }
 
+func (tbl GatewayChassisTable) FindChassisReferrer_chassis(refUuid string) (r []*GatewayChassis) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Chassis != nil && *row.Chassis == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
 func (row *GatewayChassis) HasExternalIds() bool {
 	return true
 }
@@ -1829,6 +1863,16 @@ func (row *LogicalFlow) MatchNonZeros(row1 *LogicalFlow) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl LogicalFlowTable) FindDatapathBindingReferrer_logical_datapath(refUuid string) (r []*LogicalFlow) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.LogicalDatapath == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
 }
 
 func (row *LogicalFlow) HasExternalIds() bool {
@@ -2011,6 +2055,16 @@ func (row *MACBinding) MatchNonZeros(row1 *MACBinding) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl MACBindingTable) FindDatapathBindingReferrer_datapath(refUuid string) (r []*MACBinding) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Datapath == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
 }
 
 func (row *MACBinding) HasExternalIds() bool {
@@ -2204,6 +2258,28 @@ func (row *MulticastGroup) MatchNonZeros(row1 *MulticastGroup) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl MulticastGroupTable) FindDatapathBindingReferrer_datapath(refUuid string) (r []*MulticastGroup) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Datapath == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl MulticastGroupTable) FindPortBindingReferrer_ports(refUuid string) (r []*MulticastGroup) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Ports {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
 }
 
 func (row *MulticastGroup) HasExternalIds() bool {
@@ -2450,6 +2526,38 @@ func (row *PortBinding) MatchNonZeros(row1 *PortBinding) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl PortBindingTable) FindChassisReferrer_chassis(refUuid string) (r []*PortBinding) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Chassis != nil && *row.Chassis == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl PortBindingTable) FindDatapathBindingReferrer_datapath(refUuid string) (r []*PortBinding) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Datapath == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl PortBindingTable) FindGatewayChassisReferrer_gateway_chassis(refUuid string) (r []*PortBinding) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.GatewayChassis {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
 }
 
 func (row *PortBinding) HasExternalIds() bool {
@@ -2736,6 +2844,18 @@ func (row *RBACRole) MatchNonZeros(row1 *RBACRole) bool {
 	return true
 }
 
+func (tbl RBACRoleTable) FindRBACPermissionReferrer2_permissions(refUuid string) (r []*RBACRole) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Permissions {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
 func (row *RBACRole) HasExternalIds() bool {
 	return false
 }
@@ -2876,6 +2996,28 @@ func (row *SBGlobal) MatchNonZeros(row1 *SBGlobal) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl SBGlobalTable) FindConnectionReferrer_connections(refUuid string) (r []*SBGlobal) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Connections {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl SBGlobalTable) FindSSLReferrer_ssl(refUuid string) (r []*SBGlobal) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Ssl != nil && *row.Ssl == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
 }
 
 func (row *SBGlobal) HasExternalIds() bool {

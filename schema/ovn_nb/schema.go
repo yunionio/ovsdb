@@ -1546,6 +1546,54 @@ func (row *LogicalRouter) MatchNonZeros(row1 *LogicalRouter) bool {
 	return true
 }
 
+func (tbl LogicalRouterTable) FindLoadBalancerReferrer_load_balancer(refUuid string) (r []*LogicalRouter) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.LoadBalancer {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl LogicalRouterTable) FindNATReferrer_nat(refUuid string) (r []*LogicalRouter) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Nat {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl LogicalRouterTable) FindLogicalRouterPortReferrer_ports(refUuid string) (r []*LogicalRouter) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Ports {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl LogicalRouterTable) FindLogicalRouterStaticRouteReferrer_static_routes(refUuid string) (r []*LogicalRouter) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.StaticRoutes {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
 func (row *LogicalRouter) HasExternalIds() bool {
 	return true
 }
@@ -1758,6 +1806,18 @@ func (row *LogicalRouterPort) MatchNonZeros(row1 *LogicalRouterPort) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl LogicalRouterPortTable) FindGatewayChassisReferrer_gateway_chassis(refUuid string) (r []*LogicalRouterPort) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.GatewayChassis {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
 }
 
 func (row *LogicalRouterPort) HasExternalIds() bool {
@@ -2107,6 +2167,66 @@ func (row *LogicalSwitch) MatchNonZeros(row1 *LogicalSwitch) bool {
 	return true
 }
 
+func (tbl LogicalSwitchTable) FindACLReferrer_acls(refUuid string) (r []*LogicalSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Acls {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl LogicalSwitchTable) FindDNSReferrer_dns_records(refUuid string) (r []*LogicalSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.DnsRecords {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl LogicalSwitchTable) FindLoadBalancerReferrer_load_balancer(refUuid string) (r []*LogicalSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.LoadBalancer {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl LogicalSwitchTable) FindLogicalSwitchPortReferrer_ports(refUuid string) (r []*LogicalSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Ports {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl LogicalSwitchTable) FindQoSReferrer_qos_rules(refUuid string) (r []*LogicalSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.QosRules {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
 func (row *LogicalSwitch) HasExternalIds() bool {
 	return true
 }
@@ -2354,6 +2474,26 @@ func (row *LogicalSwitchPort) MatchNonZeros(row1 *LogicalSwitchPort) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl LogicalSwitchPortTable) FindDHCPOptionsReferrer_dhcpv4_options(refUuid string) (r []*LogicalSwitchPort) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Dhcpv4Options != nil && *row.Dhcpv4Options == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl LogicalSwitchPortTable) FindDHCPOptionsReferrer_dhcpv6_options(refUuid string) (r []*LogicalSwitchPort) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Dhcpv6Options != nil && *row.Dhcpv6Options == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
 }
 
 func (row *LogicalSwitchPort) HasExternalIds() bool {
@@ -2694,6 +2834,28 @@ func (row *NBGlobal) MatchNonZeros(row1 *NBGlobal) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl NBGlobalTable) FindConnectionReferrer_connections(refUuid string) (r []*NBGlobal) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Connections {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl NBGlobalTable) FindSSLReferrer_ssl(refUuid string) (r []*NBGlobal) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Ssl != nil && *row.Ssl == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
 }
 
 func (row *NBGlobal) HasExternalIds() bool {

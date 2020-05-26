@@ -367,6 +367,18 @@ func (row *ACL) MatchNonZeros(row1 *ACL) bool {
 	return true
 }
 
+func (tbl ACLTable) FindACLEntryReferrer_acl_entries(refUuid string) (r []*ACL) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.AclEntries {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
 func (row *ACL) HasExternalIds() bool {
 	return false
 }
@@ -749,6 +761,16 @@ func (row *ArpSourcesLocal) MatchNonZeros(row1 *ArpSourcesLocal) bool {
 	return true
 }
 
+func (tbl ArpSourcesLocalTable) FindPhysicalLocatorReferrer_locator(refUuid string) (r []*ArpSourcesLocal) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Locator == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
 func (row *ArpSourcesLocal) HasExternalIds() bool {
 	return false
 }
@@ -875,6 +897,16 @@ func (row *ArpSourcesRemote) MatchNonZeros(row1 *ArpSourcesRemote) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl ArpSourcesRemoteTable) FindPhysicalLocatorReferrer_locator(refUuid string) (r []*ArpSourcesRemote) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Locator == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
 }
 
 func (row *ArpSourcesRemote) HasExternalIds() bool {
@@ -1010,6 +1042,30 @@ func (row *Global) MatchNonZeros(row1 *Global) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl GlobalTable) FindManagerReferrer_managers(refUuid string) (r []*Global) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Managers {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl GlobalTable) FindPhysicalSwitchReferrer_switches(refUuid string) (r []*Global) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Switches {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
 }
 
 func (row *Global) HasExternalIds() bool {
@@ -1338,6 +1394,30 @@ func (row *LogicalRouter) MatchNonZeros(row1 *LogicalRouter) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl LogicalRouterTable) FindACLReferrer2_acl_binding(refUuid string) (r []*LogicalRouter) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.AclBinding {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl LogicalRouterTable) FindLogicalSwitchReferrer2_switch_binding(refUuid string) (r []*LogicalRouter) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.SwitchBinding {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
 }
 
 func (row *LogicalRouter) HasExternalIds() bool {
@@ -1833,6 +1913,26 @@ func (row *McastMacsLocal) MatchNonZeros(row1 *McastMacsLocal) bool {
 	return true
 }
 
+func (tbl McastMacsLocalTable) FindPhysicalLocatorSetReferrer_locator_set(refUuid string) (r []*McastMacsLocal) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.LocatorSet == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl McastMacsLocalTable) FindLogicalSwitchReferrer_logical_switch(refUuid string) (r []*McastMacsLocal) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.LogicalSwitch == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
 func (row *McastMacsLocal) HasExternalIds() bool {
 	return false
 }
@@ -1973,6 +2073,26 @@ func (row *McastMacsRemote) MatchNonZeros(row1 *McastMacsRemote) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl McastMacsRemoteTable) FindPhysicalLocatorSetReferrer_locator_set(refUuid string) (r []*McastMacsRemote) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.LocatorSet == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl McastMacsRemoteTable) FindLogicalSwitchReferrer_logical_switch(refUuid string) (r []*McastMacsRemote) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.LogicalSwitch == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
 }
 
 func (row *McastMacsRemote) HasExternalIds() bool {
@@ -2260,6 +2380,18 @@ func (row *PhysicalLocatorSet) MatchNonZeros(row1 *PhysicalLocatorSet) bool {
 	return true
 }
 
+func (tbl PhysicalLocatorSetTable) FindPhysicalLocatorReferrer_locators(refUuid string) (r []*PhysicalLocatorSet) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Locators {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
 func (row *PhysicalLocatorSet) HasExternalIds() bool {
 	return false
 }
@@ -2421,6 +2553,42 @@ func (row *PhysicalPort) MatchNonZeros(row1 *PhysicalPort) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl PhysicalPortTable) FindACLReferrer2_acl_bindings(refUuid string) (r []*PhysicalPort) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.AclBindings {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl PhysicalPortTable) FindLogicalSwitchReferrer2_vlan_bindings(refUuid string) (r []*PhysicalPort) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.VlanBindings {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl PhysicalPortTable) FindLogicalBindingStatsReferrer2_vlan_stats(refUuid string) (r []*PhysicalPort) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.VlanStats {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
 }
 
 func (row *PhysicalPort) HasExternalIds() bool {
@@ -2616,6 +2784,30 @@ func (row *PhysicalSwitch) MatchNonZeros(row1 *PhysicalSwitch) bool {
 	return true
 }
 
+func (tbl PhysicalSwitchTable) FindPhysicalPortReferrer_ports(refUuid string) (r []*PhysicalSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Ports {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl PhysicalSwitchTable) FindTunnelReferrer_tunnels(refUuid string) (r []*PhysicalSwitch) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Tunnels {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
 func (row *PhysicalSwitch) HasExternalIds() bool {
 	return false
 }
@@ -2772,6 +2964,26 @@ func (row *Tunnel) MatchNonZeros(row1 *Tunnel) bool {
 	return true
 }
 
+func (tbl TunnelTable) FindPhysicalLocatorReferrer_local(refUuid string) (r []*Tunnel) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Local == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl TunnelTable) FindPhysicalLocatorReferrer_remote(refUuid string) (r []*Tunnel) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Remote == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
 func (row *Tunnel) HasExternalIds() bool {
 	return false
 }
@@ -2914,6 +3126,26 @@ func (row *UcastMacsLocal) MatchNonZeros(row1 *UcastMacsLocal) bool {
 	return true
 }
 
+func (tbl UcastMacsLocalTable) FindPhysicalLocatorReferrer_locator(refUuid string) (r []*UcastMacsLocal) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Locator == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl UcastMacsLocalTable) FindLogicalSwitchReferrer_logical_switch(refUuid string) (r []*UcastMacsLocal) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.LogicalSwitch == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
 func (row *UcastMacsLocal) HasExternalIds() bool {
 	return false
 }
@@ -3054,6 +3286,26 @@ func (row *UcastMacsRemote) MatchNonZeros(row1 *UcastMacsRemote) bool {
 		return false
 	}
 	return true
+}
+
+func (tbl UcastMacsRemoteTable) FindPhysicalLocatorReferrer_locator(refUuid string) (r []*UcastMacsRemote) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Locator == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl UcastMacsRemoteTable) FindLogicalSwitchReferrer_logical_switch(refUuid string) (r []*UcastMacsRemote) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.LogicalSwitch == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
 }
 
 func (row *UcastMacsRemote) HasExternalIds() bool {
