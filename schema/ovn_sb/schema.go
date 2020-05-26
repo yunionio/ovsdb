@@ -22,8 +22,11 @@ type OVNSouthbound struct {
 	GatewayChassis  GatewayChassisTable
 	LogicalFlow     LogicalFlowTable
 	MACBinding      MACBindingTable
+	Meter           MeterTable
+	MeterBand       MeterBandTable
 	MulticastGroup  MulticastGroupTable
 	PortBinding     PortBindingTable
+	PortGroup       PortGroupTable
 	RBACPermission  RBACPermissionTable
 	RBACRole        RBACRoleTable
 	SBGlobal        SBGlobalTable
@@ -89,6 +92,16 @@ func (db OVNSouthbound) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 			return r
 		}
 		return nil
+	case *Meter:
+		if r := db.Meter.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	case *MeterBand:
+		if r := db.MeterBand.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
 	case *MulticastGroup:
 		if r := db.MulticastGroup.FindOneMatchNonZeros(row); r != nil {
 			return r
@@ -96,6 +109,11 @@ func (db OVNSouthbound) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 		return nil
 	case *PortBinding:
 		if r := db.PortBinding.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	case *PortGroup:
+		if r := db.PortGroup.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
@@ -180,6 +198,16 @@ func (db OVNSouthbound) FindOneMatchByAnyIndex(irow types.IRow) types.IRow {
 			return r
 		}
 		return nil
+	case *Meter:
+		if r := db.Meter.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *MeterBand:
+		if r := db.MeterBand.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
 	case *MulticastGroup:
 		if r := db.MulticastGroup.OvsdbGetByAnyIndex(row); r != nil {
 			return r
@@ -187,6 +215,11 @@ func (db OVNSouthbound) FindOneMatchByAnyIndex(irow types.IRow) types.IRow {
 		return nil
 	case *PortBinding:
 		if r := db.PortBinding.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *PortGroup:
+		if r := db.PortGroup.OvsdbGetByAnyIndex(row); r != nil {
 			return r
 		}
 		return nil
@@ -2083,6 +2116,311 @@ func (row *MACBinding) RemoveExternalId(k string) (string, bool) {
 	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
 }
 
+type MeterTable []Meter
+
+var _ types.ITable = &MeterTable{}
+
+func (tbl MeterTable) OvsdbTableName() string {
+	return "Meter"
+}
+
+func (tbl MeterTable) OvsdbIsRoot() bool {
+	return true
+}
+
+func (tbl MeterTable) Rows() []types.IRow {
+	r := make([]types.IRow, len(tbl))
+	for i := range tbl {
+		r[i] = &tbl[i]
+	}
+	return r
+}
+
+func (tbl MeterTable) NewRow() types.IRow {
+	return &Meter{}
+}
+
+func (tbl *MeterTable) AppendRow(irow types.IRow) {
+	row := irow.(*Meter)
+	*tbl = append(*tbl, *row)
+}
+
+func (tbl MeterTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *Meter) MatchByName(row1 *Meter) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl MeterTable) GetByName(row1 *Meter) *Meter {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl MeterTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*Meter)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl MeterTable) FindOneMatchNonZeros(row1 *Meter) *Meter {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchNonZeros(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+type Meter struct {
+	Uuid    string   `json:"_uuid"`
+	Version string   `json:"_version"`
+	Bands   []string `json:"bands"`
+	Name    string   `json:"name"`
+	Unit    string   `json:"unit"`
+}
+
+var _ types.IRow = &Meter{}
+
+func (row *Meter) OvsdbTableName() string {
+	return "Meter"
+}
+
+func (row *Meter) OvsdbIsRoot() bool {
+	return true
+}
+
+func (row *Meter) OvsdbUuid() string {
+	return row.Uuid
+}
+
+func (row *Meter) OvsdbCmdArgs() []string {
+	r := []string{}
+	r = append(r, types.OvsdbCmdArgsUuidMultiples("bands", row.Bands)...)
+	r = append(r, types.OvsdbCmdArgsString("name", row.Name)...)
+	r = append(r, types.OvsdbCmdArgsString("unit", row.Unit)...)
+	return r
+}
+
+func (row *Meter) SetColumn(name string, val interface{}) (err error) {
+	defer func() {
+		if panicErr := recover(); panicErr != nil {
+			err = errors.Wrapf(panicErr.(error), "%s: %#v", name, fmt.Sprintf("%#v", val))
+		}
+	}()
+	switch name {
+	case "_uuid":
+		row.Uuid = types.EnsureUuid(val)
+	case "_version":
+		row.Version = types.EnsureUuid(val)
+	case "bands":
+		row.Bands = types.EnsureUuidMultiples(val)
+	case "name":
+		row.Name = types.EnsureString(val)
+	case "unit":
+		row.Unit = types.EnsureString(val)
+	default:
+		panic(types.ErrUnknownColumn)
+	}
+	return
+}
+
+func (row *Meter) MatchNonZeros(row1 *Meter) bool {
+	if !types.MatchUuidIfNonZero(row.Uuid, row1.Uuid) {
+		return false
+	}
+	if !types.MatchUuidIfNonZero(row.Version, row1.Version) {
+		return false
+	}
+	if !types.MatchUuidMultiplesIfNonZero(row.Bands, row1.Bands) {
+		return false
+	}
+	if !types.MatchStringIfNonZero(row.Name, row1.Name) {
+		return false
+	}
+	if !types.MatchStringIfNonZero(row.Unit, row1.Unit) {
+		return false
+	}
+	return true
+}
+
+func (tbl MeterTable) FindMeterBandReferrer_bands(refUuid string) (r []*Meter) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Bands {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (row *Meter) HasExternalIds() bool {
+	return false
+}
+
+func (row *Meter) SetExternalId(k, v string) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *Meter) GetExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *Meter) RemoveExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+type MeterBandTable []MeterBand
+
+var _ types.ITable = &MeterBandTable{}
+
+func (tbl MeterBandTable) OvsdbTableName() string {
+	return "Meter_Band"
+}
+
+func (tbl MeterBandTable) OvsdbIsRoot() bool {
+	return false
+}
+
+func (tbl MeterBandTable) Rows() []types.IRow {
+	r := make([]types.IRow, len(tbl))
+	for i := range tbl {
+		r[i] = &tbl[i]
+	}
+	return r
+}
+
+func (tbl MeterBandTable) NewRow() types.IRow {
+	return &MeterBand{}
+}
+
+func (tbl *MeterBandTable) AppendRow(irow types.IRow) {
+	row := irow.(*MeterBand)
+	*tbl = append(*tbl, *row)
+}
+
+func (tbl MeterBandTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl MeterBandTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
+func (tbl MeterBandTable) FindOneMatchNonZeros(row1 *MeterBand) *MeterBand {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchNonZeros(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+type MeterBand struct {
+	Uuid      string `json:"_uuid"`
+	Version   string `json:"_version"`
+	Action    string `json:"action"`
+	BurstSize int64  `json:"burst_size"`
+	Rate      int64  `json:"rate"`
+}
+
+var _ types.IRow = &MeterBand{}
+
+func (row *MeterBand) OvsdbTableName() string {
+	return "Meter_Band"
+}
+
+func (row *MeterBand) OvsdbIsRoot() bool {
+	return false
+}
+
+func (row *MeterBand) OvsdbUuid() string {
+	return row.Uuid
+}
+
+func (row *MeterBand) OvsdbCmdArgs() []string {
+	r := []string{}
+	r = append(r, types.OvsdbCmdArgsString("action", row.Action)...)
+	r = append(r, types.OvsdbCmdArgsInteger("burst_size", row.BurstSize)...)
+	r = append(r, types.OvsdbCmdArgsInteger("rate", row.Rate)...)
+	return r
+}
+
+func (row *MeterBand) SetColumn(name string, val interface{}) (err error) {
+	defer func() {
+		if panicErr := recover(); panicErr != nil {
+			err = errors.Wrapf(panicErr.(error), "%s: %#v", name, fmt.Sprintf("%#v", val))
+		}
+	}()
+	switch name {
+	case "_uuid":
+		row.Uuid = types.EnsureUuid(val)
+	case "_version":
+		row.Version = types.EnsureUuid(val)
+	case "action":
+		row.Action = types.EnsureString(val)
+	case "burst_size":
+		row.BurstSize = types.EnsureInteger(val)
+	case "rate":
+		row.Rate = types.EnsureInteger(val)
+	default:
+		panic(types.ErrUnknownColumn)
+	}
+	return
+}
+
+func (row *MeterBand) MatchNonZeros(row1 *MeterBand) bool {
+	if !types.MatchUuidIfNonZero(row.Uuid, row1.Uuid) {
+		return false
+	}
+	if !types.MatchUuidIfNonZero(row.Version, row1.Version) {
+		return false
+	}
+	if !types.MatchStringIfNonZero(row.Action, row1.Action) {
+		return false
+	}
+	if !types.MatchIntegerIfNonZero(row.BurstSize, row1.BurstSize) {
+		return false
+	}
+	if !types.MatchIntegerIfNonZero(row.Rate, row1.Rate) {
+		return false
+	}
+	return true
+}
+
+func (row *MeterBand) HasExternalIds() bool {
+	return false
+}
+
+func (row *MeterBand) SetExternalId(k, v string) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *MeterBand) GetExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *MeterBand) RemoveExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
 type MulticastGroupTable []MulticastGroup
 
 var _ types.ITable = &MulticastGroupTable{}
@@ -2588,6 +2926,157 @@ func (row *PortBinding) RemoveExternalId(k string) (string, bool) {
 		delete(row.ExternalIds, k)
 	}
 	return r, ok
+}
+
+type PortGroupTable []PortGroup
+
+var _ types.ITable = &PortGroupTable{}
+
+func (tbl PortGroupTable) OvsdbTableName() string {
+	return "Port_Group"
+}
+
+func (tbl PortGroupTable) OvsdbIsRoot() bool {
+	return true
+}
+
+func (tbl PortGroupTable) Rows() []types.IRow {
+	r := make([]types.IRow, len(tbl))
+	for i := range tbl {
+		r[i] = &tbl[i]
+	}
+	return r
+}
+
+func (tbl PortGroupTable) NewRow() types.IRow {
+	return &PortGroup{}
+}
+
+func (tbl *PortGroupTable) AppendRow(irow types.IRow) {
+	row := irow.(*PortGroup)
+	*tbl = append(*tbl, *row)
+}
+
+func (tbl PortGroupTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *PortGroup) MatchByName(row1 *PortGroup) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl PortGroupTable) GetByName(row1 *PortGroup) *PortGroup {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl PortGroupTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*PortGroup)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl PortGroupTable) FindOneMatchNonZeros(row1 *PortGroup) *PortGroup {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchNonZeros(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+type PortGroup struct {
+	Uuid    string   `json:"_uuid"`
+	Version string   `json:"_version"`
+	Name    string   `json:"name"`
+	Ports   []string `json:"ports"`
+}
+
+var _ types.IRow = &PortGroup{}
+
+func (row *PortGroup) OvsdbTableName() string {
+	return "Port_Group"
+}
+
+func (row *PortGroup) OvsdbIsRoot() bool {
+	return true
+}
+
+func (row *PortGroup) OvsdbUuid() string {
+	return row.Uuid
+}
+
+func (row *PortGroup) OvsdbCmdArgs() []string {
+	r := []string{}
+	r = append(r, types.OvsdbCmdArgsString("name", row.Name)...)
+	r = append(r, types.OvsdbCmdArgsStringMultiples("ports", row.Ports)...)
+	return r
+}
+
+func (row *PortGroup) SetColumn(name string, val interface{}) (err error) {
+	defer func() {
+		if panicErr := recover(); panicErr != nil {
+			err = errors.Wrapf(panicErr.(error), "%s: %#v", name, fmt.Sprintf("%#v", val))
+		}
+	}()
+	switch name {
+	case "_uuid":
+		row.Uuid = types.EnsureUuid(val)
+	case "_version":
+		row.Version = types.EnsureUuid(val)
+	case "name":
+		row.Name = types.EnsureString(val)
+	case "ports":
+		row.Ports = types.EnsureStringMultiples(val)
+	default:
+		panic(types.ErrUnknownColumn)
+	}
+	return
+}
+
+func (row *PortGroup) MatchNonZeros(row1 *PortGroup) bool {
+	if !types.MatchUuidIfNonZero(row.Uuid, row1.Uuid) {
+		return false
+	}
+	if !types.MatchUuidIfNonZero(row.Version, row1.Version) {
+		return false
+	}
+	if !types.MatchStringIfNonZero(row.Name, row1.Name) {
+		return false
+	}
+	if !types.MatchStringMultiplesIfNonZero(row.Ports, row1.Ports) {
+		return false
+	}
+	return true
+}
+
+func (row *PortGroup) HasExternalIds() bool {
+	return false
+}
+
+func (row *PortGroup) SetExternalId(k, v string) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *PortGroup) GetExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *PortGroup) RemoveExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
 }
 
 type RBACPermissionTable []RBACPermission

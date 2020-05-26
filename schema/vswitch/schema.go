@@ -2559,22 +2559,24 @@ func (tbl OpenVSwitchTable) FindOneMatchNonZeros(row1 *OpenVSwitch) *OpenVSwitch
 }
 
 type OpenVSwitch struct {
-	Uuid           string            `json:"_uuid"`
-	Version        string            `json:"_version"`
-	Bridges        []string          `json:"bridges"`
-	CurCfg         int64             `json:"cur_cfg"`
-	DatapathTypes  []string          `json:"datapath_types"`
-	DbVersion      *string           `json:"db_version"`
-	ExternalIds    map[string]string `json:"external_ids"`
-	IfaceTypes     []string          `json:"iface_types"`
-	ManagerOptions []string          `json:"manager_options"`
-	NextCfg        int64             `json:"next_cfg"`
-	OtherConfig    map[string]string `json:"other_config"`
-	OvsVersion     *string           `json:"ovs_version"`
-	Ssl            *string           `json:"ssl"`
-	Statistics     map[string]string `json:"statistics"`
-	SystemType     *string           `json:"system_type"`
-	SystemVersion  *string           `json:"system_version"`
+	Uuid            string            `json:"_uuid"`
+	Version         string            `json:"_version"`
+	Bridges         []string          `json:"bridges"`
+	CurCfg          int64             `json:"cur_cfg"`
+	DatapathTypes   []string          `json:"datapath_types"`
+	DbVersion       *string           `json:"db_version"`
+	DpdkInitialized bool              `json:"dpdk_initialized"`
+	DpdkVersion     *string           `json:"dpdk_version"`
+	ExternalIds     map[string]string `json:"external_ids"`
+	IfaceTypes      []string          `json:"iface_types"`
+	ManagerOptions  []string          `json:"manager_options"`
+	NextCfg         int64             `json:"next_cfg"`
+	OtherConfig     map[string]string `json:"other_config"`
+	OvsVersion      *string           `json:"ovs_version"`
+	Ssl             *string           `json:"ssl"`
+	Statistics      map[string]string `json:"statistics"`
+	SystemType      *string           `json:"system_type"`
+	SystemVersion   *string           `json:"system_version"`
 }
 
 var _ types.IRow = &OpenVSwitch{}
@@ -2597,6 +2599,8 @@ func (row *OpenVSwitch) OvsdbCmdArgs() []string {
 	r = append(r, types.OvsdbCmdArgsInteger("cur_cfg", row.CurCfg)...)
 	r = append(r, types.OvsdbCmdArgsStringMultiples("datapath_types", row.DatapathTypes)...)
 	r = append(r, types.OvsdbCmdArgsStringOptional("db_version", row.DbVersion)...)
+	r = append(r, types.OvsdbCmdArgsBoolean("dpdk_initialized", row.DpdkInitialized)...)
+	r = append(r, types.OvsdbCmdArgsStringOptional("dpdk_version", row.DpdkVersion)...)
 	r = append(r, types.OvsdbCmdArgsMapStringString("external_ids", row.ExternalIds)...)
 	r = append(r, types.OvsdbCmdArgsStringMultiples("iface_types", row.IfaceTypes)...)
 	r = append(r, types.OvsdbCmdArgsUuidMultiples("manager_options", row.ManagerOptions)...)
@@ -2629,6 +2633,10 @@ func (row *OpenVSwitch) SetColumn(name string, val interface{}) (err error) {
 		row.DatapathTypes = types.EnsureStringMultiples(val)
 	case "db_version":
 		row.DbVersion = types.EnsureStringOptional(val)
+	case "dpdk_initialized":
+		row.DpdkInitialized = types.EnsureBoolean(val)
+	case "dpdk_version":
+		row.DpdkVersion = types.EnsureStringOptional(val)
 	case "external_ids":
 		row.ExternalIds = types.EnsureMapStringString(val)
 	case "iface_types":
@@ -2672,6 +2680,12 @@ func (row *OpenVSwitch) MatchNonZeros(row1 *OpenVSwitch) bool {
 		return false
 	}
 	if !types.MatchStringOptionalIfNonZero(row.DbVersion, row1.DbVersion) {
+		return false
+	}
+	if !types.MatchBooleanIfNonZero(row.DpdkInitialized, row1.DpdkInitialized) {
+		return false
+	}
+	if !types.MatchStringOptionalIfNonZero(row.DpdkVersion, row1.DpdkVersion) {
 		return false
 	}
 	if !types.MatchMapStringStringIfNonZero(row.ExternalIds, row1.ExternalIds) {
