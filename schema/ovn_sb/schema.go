@@ -14,12 +14,17 @@ type OVNSouthbound struct {
 	AddressSet      AddressSetTable
 	Chassis         ChassisTable
 	Connection      ConnectionTable
+	ControllerEvent ControllerEventTable
 	DHCPOptions     DHCPOptionsTable
 	DHCPv6Options   DHCPv6OptionsTable
 	DNS             DNSTable
 	DatapathBinding DatapathBindingTable
 	Encap           EncapTable
 	GatewayChassis  GatewayChassisTable
+	HAChassis       HAChassisTable
+	HAChassisGroup  HAChassisGroupTable
+	IGMPGroup       IGMPGroupTable
+	IPMulticast     IPMulticastTable
 	LogicalFlow     LogicalFlowTable
 	MACBinding      MACBindingTable
 	Meter           MeterTable
@@ -52,6 +57,11 @@ func (db OVNSouthbound) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 			return r
 		}
 		return nil
+	case *ControllerEvent:
+		if r := db.ControllerEvent.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
 	case *DHCPOptions:
 		if r := db.DHCPOptions.FindOneMatchNonZeros(row); r != nil {
 			return r
@@ -79,6 +89,26 @@ func (db OVNSouthbound) FindOneMatchNonZeros(irow types.IRow) types.IRow {
 		return nil
 	case *GatewayChassis:
 		if r := db.GatewayChassis.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	case *HAChassis:
+		if r := db.HAChassis.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	case *HAChassisGroup:
+		if r := db.HAChassisGroup.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	case *IGMPGroup:
+		if r := db.IGMPGroup.FindOneMatchNonZeros(row); r != nil {
+			return r
+		}
+		return nil
+	case *IPMulticast:
+		if r := db.IPMulticast.FindOneMatchNonZeros(row); r != nil {
 			return r
 		}
 		return nil
@@ -158,6 +188,11 @@ func (db OVNSouthbound) FindOneMatchByAnyIndex(irow types.IRow) types.IRow {
 			return r
 		}
 		return nil
+	case *ControllerEvent:
+		if r := db.ControllerEvent.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
 	case *DHCPOptions:
 		if r := db.DHCPOptions.OvsdbGetByAnyIndex(row); r != nil {
 			return r
@@ -185,6 +220,26 @@ func (db OVNSouthbound) FindOneMatchByAnyIndex(irow types.IRow) types.IRow {
 		return nil
 	case *GatewayChassis:
 		if r := db.GatewayChassis.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *HAChassis:
+		if r := db.HAChassis.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *HAChassisGroup:
+		if r := db.HAChassisGroup.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *IGMPGroup:
+		if r := db.IGMPGroup.OvsdbGetByAnyIndex(row); r != nil {
+			return r
+		}
+		return nil
+	case *IPMulticast:
+		if r := db.IPMulticast.OvsdbGetByAnyIndex(row); r != nil {
 			return r
 		}
 		return nil
@@ -476,6 +531,7 @@ type Chassis struct {
 	Hostname            string            `json:"hostname"`
 	Name                string            `json:"name"`
 	NbCfg               int64             `json:"nb_cfg"`
+	TransportZones      []string          `json:"transport_zones"`
 	VtepLogicalSwitches []string          `json:"vtep_logical_switches"`
 }
 
@@ -500,6 +556,7 @@ func (row *Chassis) OvsdbCmdArgs() []string {
 	r = append(r, types.OvsdbCmdArgsString("hostname", row.Hostname)...)
 	r = append(r, types.OvsdbCmdArgsString("name", row.Name)...)
 	r = append(r, types.OvsdbCmdArgsInteger("nb_cfg", row.NbCfg)...)
+	r = append(r, types.OvsdbCmdArgsStringMultiples("transport_zones", row.TransportZones)...)
 	r = append(r, types.OvsdbCmdArgsStringMultiples("vtep_logical_switches", row.VtepLogicalSwitches)...)
 	return r
 }
@@ -525,6 +582,8 @@ func (row *Chassis) SetColumn(name string, val interface{}) (err error) {
 		row.Name = types.EnsureString(val)
 	case "nb_cfg":
 		row.NbCfg = types.EnsureInteger(val)
+	case "transport_zones":
+		row.TransportZones = types.EnsureStringMultiples(val)
 	case "vtep_logical_switches":
 		row.VtepLogicalSwitches = types.EnsureStringMultiples(val)
 	default:
@@ -553,6 +612,9 @@ func (row *Chassis) MatchNonZeros(row1 *Chassis) bool {
 		return false
 	}
 	if !types.MatchIntegerIfNonZero(row.NbCfg, row1.NbCfg) {
+		return false
+	}
+	if !types.MatchStringMultiplesIfNonZero(row.TransportZones, row1.TransportZones) {
 		return false
 	}
 	if !types.MatchStringMultiplesIfNonZero(row.VtepLogicalSwitches, row1.VtepLogicalSwitches) {
@@ -815,6 +877,158 @@ func (row *Connection) RemoveExternalId(k string) (string, bool) {
 		delete(row.ExternalIds, k)
 	}
 	return r, ok
+}
+
+type ControllerEventTable []ControllerEvent
+
+var _ types.ITable = &ControllerEventTable{}
+
+func (tbl ControllerEventTable) OvsdbTableName() string {
+	return "Controller_Event"
+}
+
+func (tbl ControllerEventTable) OvsdbIsRoot() bool {
+	return true
+}
+
+func (tbl ControllerEventTable) Rows() []types.IRow {
+	r := make([]types.IRow, len(tbl))
+	for i := range tbl {
+		r[i] = &tbl[i]
+	}
+	return r
+}
+
+func (tbl ControllerEventTable) NewRow() types.IRow {
+	return &ControllerEvent{}
+}
+
+func (tbl *ControllerEventTable) AppendRow(irow types.IRow) {
+	row := irow.(*ControllerEvent)
+	*tbl = append(*tbl, *row)
+}
+
+func (tbl ControllerEventTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl ControllerEventTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
+func (tbl ControllerEventTable) FindOneMatchNonZeros(row1 *ControllerEvent) *ControllerEvent {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchNonZeros(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+type ControllerEvent struct {
+	Uuid      string            `json:"_uuid"`
+	Version   string            `json:"_version"`
+	Chassis   *string           `json:"chassis"`
+	EventInfo map[string]string `json:"event_info"`
+	EventType string            `json:"event_type"`
+	SeqNum    int64             `json:"seq_num"`
+}
+
+var _ types.IRow = &ControllerEvent{}
+
+func (row *ControllerEvent) OvsdbTableName() string {
+	return "Controller_Event"
+}
+
+func (row *ControllerEvent) OvsdbIsRoot() bool {
+	return true
+}
+
+func (row *ControllerEvent) OvsdbUuid() string {
+	return row.Uuid
+}
+
+func (row *ControllerEvent) OvsdbCmdArgs() []string {
+	r := []string{}
+	r = append(r, types.OvsdbCmdArgsUuidOptional("chassis", row.Chassis)...)
+	r = append(r, types.OvsdbCmdArgsMapStringString("event_info", row.EventInfo)...)
+	r = append(r, types.OvsdbCmdArgsString("event_type", row.EventType)...)
+	r = append(r, types.OvsdbCmdArgsInteger("seq_num", row.SeqNum)...)
+	return r
+}
+
+func (row *ControllerEvent) SetColumn(name string, val interface{}) (err error) {
+	defer func() {
+		if panicErr := recover(); panicErr != nil {
+			err = errors.Wrapf(panicErr.(error), "%s: %#v", name, fmt.Sprintf("%#v", val))
+		}
+	}()
+	switch name {
+	case "_uuid":
+		row.Uuid = types.EnsureUuid(val)
+	case "_version":
+		row.Version = types.EnsureUuid(val)
+	case "chassis":
+		row.Chassis = types.EnsureUuidOptional(val)
+	case "event_info":
+		row.EventInfo = types.EnsureMapStringString(val)
+	case "event_type":
+		row.EventType = types.EnsureString(val)
+	case "seq_num":
+		row.SeqNum = types.EnsureInteger(val)
+	default:
+		panic(types.ErrUnknownColumn)
+	}
+	return
+}
+
+func (row *ControllerEvent) MatchNonZeros(row1 *ControllerEvent) bool {
+	if !types.MatchUuidIfNonZero(row.Uuid, row1.Uuid) {
+		return false
+	}
+	if !types.MatchUuidIfNonZero(row.Version, row1.Version) {
+		return false
+	}
+	if !types.MatchUuidOptionalIfNonZero(row.Chassis, row1.Chassis) {
+		return false
+	}
+	if !types.MatchMapStringStringIfNonZero(row.EventInfo, row1.EventInfo) {
+		return false
+	}
+	if !types.MatchStringIfNonZero(row.EventType, row1.EventType) {
+		return false
+	}
+	if !types.MatchIntegerIfNonZero(row.SeqNum, row1.SeqNum) {
+		return false
+	}
+	return true
+}
+
+func (tbl ControllerEventTable) FindChassisReferrer_chassis(refUuid string) (r []*ControllerEvent) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Chassis != nil && *row.Chassis == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (row *ControllerEvent) HasExternalIds() bool {
+	return false
+}
+
+func (row *ControllerEvent) SetExternalId(k, v string) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *ControllerEvent) GetExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *ControllerEvent) RemoveExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
 }
 
 type DHCPOptionsTable []DHCPOptions
@@ -1443,10 +1657,36 @@ func (tbl *EncapTable) AppendRow(irow types.IRow) {
 }
 
 func (tbl EncapTable) OvsdbHasIndex() bool {
-	return false
+	return true
+}
+
+func (row *Encap) MatchByTypeIp(row1 *Encap) bool {
+	if !types.MatchString(row.Type, row1.Type) {
+		return false
+	}
+	if !types.MatchString(row.Ip, row1.Ip) {
+		return false
+	}
+	return true
+}
+
+func (tbl EncapTable) GetByTypeIp(row1 *Encap) *Encap {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByTypeIp(row1) {
+			return row
+		}
+	}
+	return nil
 }
 
 func (tbl EncapTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*Encap)
+	if !(types.IsZeroString(row1.Type) || types.IsZeroString(row1.Ip)) {
+		if row := tbl.GetByTypeIp(row1); row != nil {
+			return row
+		}
+	}
 	return nil
 }
 
@@ -1749,6 +1989,788 @@ func (row *GatewayChassis) RemoveExternalId(k string) (string, bool) {
 		delete(row.ExternalIds, k)
 	}
 	return r, ok
+}
+
+type HAChassisTable []HAChassis
+
+var _ types.ITable = &HAChassisTable{}
+
+func (tbl HAChassisTable) OvsdbTableName() string {
+	return "HA_Chassis"
+}
+
+func (tbl HAChassisTable) OvsdbIsRoot() bool {
+	return false
+}
+
+func (tbl HAChassisTable) Rows() []types.IRow {
+	r := make([]types.IRow, len(tbl))
+	for i := range tbl {
+		r[i] = &tbl[i]
+	}
+	return r
+}
+
+func (tbl HAChassisTable) NewRow() types.IRow {
+	return &HAChassis{}
+}
+
+func (tbl *HAChassisTable) AppendRow(irow types.IRow) {
+	row := irow.(*HAChassis)
+	*tbl = append(*tbl, *row)
+}
+
+func (tbl HAChassisTable) OvsdbHasIndex() bool {
+	return false
+}
+
+func (tbl HAChassisTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	return nil
+}
+
+func (tbl HAChassisTable) FindOneMatchNonZeros(row1 *HAChassis) *HAChassis {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchNonZeros(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+type HAChassis struct {
+	Uuid        string            `json:"_uuid"`
+	Version     string            `json:"_version"`
+	Chassis     *string           `json:"chassis"`
+	ExternalIds map[string]string `json:"external_ids"`
+	Priority    int64             `json:"priority"`
+}
+
+var _ types.IRow = &HAChassis{}
+
+func (row *HAChassis) OvsdbTableName() string {
+	return "HA_Chassis"
+}
+
+func (row *HAChassis) OvsdbIsRoot() bool {
+	return false
+}
+
+func (row *HAChassis) OvsdbUuid() string {
+	return row.Uuid
+}
+
+func (row *HAChassis) OvsdbCmdArgs() []string {
+	r := []string{}
+	r = append(r, types.OvsdbCmdArgsUuidOptional("chassis", row.Chassis)...)
+	r = append(r, types.OvsdbCmdArgsMapStringString("external_ids", row.ExternalIds)...)
+	r = append(r, types.OvsdbCmdArgsInteger("priority", row.Priority)...)
+	return r
+}
+
+func (row *HAChassis) SetColumn(name string, val interface{}) (err error) {
+	defer func() {
+		if panicErr := recover(); panicErr != nil {
+			err = errors.Wrapf(panicErr.(error), "%s: %#v", name, fmt.Sprintf("%#v", val))
+		}
+	}()
+	switch name {
+	case "_uuid":
+		row.Uuid = types.EnsureUuid(val)
+	case "_version":
+		row.Version = types.EnsureUuid(val)
+	case "chassis":
+		row.Chassis = types.EnsureUuidOptional(val)
+	case "external_ids":
+		row.ExternalIds = types.EnsureMapStringString(val)
+	case "priority":
+		row.Priority = types.EnsureInteger(val)
+	default:
+		panic(types.ErrUnknownColumn)
+	}
+	return
+}
+
+func (row *HAChassis) MatchNonZeros(row1 *HAChassis) bool {
+	if !types.MatchUuidIfNonZero(row.Uuid, row1.Uuid) {
+		return false
+	}
+	if !types.MatchUuidIfNonZero(row.Version, row1.Version) {
+		return false
+	}
+	if !types.MatchUuidOptionalIfNonZero(row.Chassis, row1.Chassis) {
+		return false
+	}
+	if !types.MatchMapStringStringIfNonZero(row.ExternalIds, row1.ExternalIds) {
+		return false
+	}
+	if !types.MatchIntegerIfNonZero(row.Priority, row1.Priority) {
+		return false
+	}
+	return true
+}
+
+func (tbl HAChassisTable) FindChassisReferrer_chassis(refUuid string) (r []*HAChassis) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Chassis != nil && *row.Chassis == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (row *HAChassis) HasExternalIds() bool {
+	return true
+}
+
+func (row *HAChassis) SetExternalId(k, v string) {
+	if row.ExternalIds == nil {
+		row.ExternalIds = map[string]string{}
+	}
+	row.ExternalIds[k] = v
+}
+
+func (row *HAChassis) GetExternalId(k string) (string, bool) {
+	if row.ExternalIds == nil {
+		return "", false
+	}
+	r, ok := row.ExternalIds[k]
+	return r, ok
+}
+
+func (row *HAChassis) RemoveExternalId(k string) (string, bool) {
+	if row.ExternalIds == nil {
+		return "", false
+	}
+	r, ok := row.ExternalIds[k]
+	if ok {
+		delete(row.ExternalIds, k)
+	}
+	return r, ok
+}
+
+type HAChassisGroupTable []HAChassisGroup
+
+var _ types.ITable = &HAChassisGroupTable{}
+
+func (tbl HAChassisGroupTable) OvsdbTableName() string {
+	return "HA_Chassis_Group"
+}
+
+func (tbl HAChassisGroupTable) OvsdbIsRoot() bool {
+	return true
+}
+
+func (tbl HAChassisGroupTable) Rows() []types.IRow {
+	r := make([]types.IRow, len(tbl))
+	for i := range tbl {
+		r[i] = &tbl[i]
+	}
+	return r
+}
+
+func (tbl HAChassisGroupTable) NewRow() types.IRow {
+	return &HAChassisGroup{}
+}
+
+func (tbl *HAChassisGroupTable) AppendRow(irow types.IRow) {
+	row := irow.(*HAChassisGroup)
+	*tbl = append(*tbl, *row)
+}
+
+func (tbl HAChassisGroupTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *HAChassisGroup) MatchByName(row1 *HAChassisGroup) bool {
+	if !types.MatchString(row.Name, row1.Name) {
+		return false
+	}
+	return true
+}
+
+func (tbl HAChassisGroupTable) GetByName(row1 *HAChassisGroup) *HAChassisGroup {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByName(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl HAChassisGroupTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*HAChassisGroup)
+	if !(types.IsZeroString(row1.Name)) {
+		if row := tbl.GetByName(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl HAChassisGroupTable) FindOneMatchNonZeros(row1 *HAChassisGroup) *HAChassisGroup {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchNonZeros(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+type HAChassisGroup struct {
+	Uuid        string            `json:"_uuid"`
+	Version     string            `json:"_version"`
+	ExternalIds map[string]string `json:"external_ids"`
+	HaChassis   []string          `json:"ha_chassis"`
+	Name        string            `json:"name"`
+	RefChassis  []string          `json:"ref_chassis"`
+}
+
+var _ types.IRow = &HAChassisGroup{}
+
+func (row *HAChassisGroup) OvsdbTableName() string {
+	return "HA_Chassis_Group"
+}
+
+func (row *HAChassisGroup) OvsdbIsRoot() bool {
+	return true
+}
+
+func (row *HAChassisGroup) OvsdbUuid() string {
+	return row.Uuid
+}
+
+func (row *HAChassisGroup) OvsdbCmdArgs() []string {
+	r := []string{}
+	r = append(r, types.OvsdbCmdArgsMapStringString("external_ids", row.ExternalIds)...)
+	r = append(r, types.OvsdbCmdArgsUuidMultiples("ha_chassis", row.HaChassis)...)
+	r = append(r, types.OvsdbCmdArgsString("name", row.Name)...)
+	r = append(r, types.OvsdbCmdArgsUuidMultiples("ref_chassis", row.RefChassis)...)
+	return r
+}
+
+func (row *HAChassisGroup) SetColumn(name string, val interface{}) (err error) {
+	defer func() {
+		if panicErr := recover(); panicErr != nil {
+			err = errors.Wrapf(panicErr.(error), "%s: %#v", name, fmt.Sprintf("%#v", val))
+		}
+	}()
+	switch name {
+	case "_uuid":
+		row.Uuid = types.EnsureUuid(val)
+	case "_version":
+		row.Version = types.EnsureUuid(val)
+	case "external_ids":
+		row.ExternalIds = types.EnsureMapStringString(val)
+	case "ha_chassis":
+		row.HaChassis = types.EnsureUuidMultiples(val)
+	case "name":
+		row.Name = types.EnsureString(val)
+	case "ref_chassis":
+		row.RefChassis = types.EnsureUuidMultiples(val)
+	default:
+		panic(types.ErrUnknownColumn)
+	}
+	return
+}
+
+func (row *HAChassisGroup) MatchNonZeros(row1 *HAChassisGroup) bool {
+	if !types.MatchUuidIfNonZero(row.Uuid, row1.Uuid) {
+		return false
+	}
+	if !types.MatchUuidIfNonZero(row.Version, row1.Version) {
+		return false
+	}
+	if !types.MatchMapStringStringIfNonZero(row.ExternalIds, row1.ExternalIds) {
+		return false
+	}
+	if !types.MatchUuidMultiplesIfNonZero(row.HaChassis, row1.HaChassis) {
+		return false
+	}
+	if !types.MatchStringIfNonZero(row.Name, row1.Name) {
+		return false
+	}
+	if !types.MatchUuidMultiplesIfNonZero(row.RefChassis, row1.RefChassis) {
+		return false
+	}
+	return true
+}
+
+func (tbl HAChassisGroupTable) FindHAChassisReferrer_ha_chassis(refUuid string) (r []*HAChassisGroup) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.HaChassis {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (tbl HAChassisGroupTable) FindChassisReferrer_ref_chassis(refUuid string) (r []*HAChassisGroup) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.RefChassis {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (row *HAChassisGroup) HasExternalIds() bool {
+	return true
+}
+
+func (row *HAChassisGroup) SetExternalId(k, v string) {
+	if row.ExternalIds == nil {
+		row.ExternalIds = map[string]string{}
+	}
+	row.ExternalIds[k] = v
+}
+
+func (row *HAChassisGroup) GetExternalId(k string) (string, bool) {
+	if row.ExternalIds == nil {
+		return "", false
+	}
+	r, ok := row.ExternalIds[k]
+	return r, ok
+}
+
+func (row *HAChassisGroup) RemoveExternalId(k string) (string, bool) {
+	if row.ExternalIds == nil {
+		return "", false
+	}
+	r, ok := row.ExternalIds[k]
+	if ok {
+		delete(row.ExternalIds, k)
+	}
+	return r, ok
+}
+
+type IGMPGroupTable []IGMPGroup
+
+var _ types.ITable = &IGMPGroupTable{}
+
+func (tbl IGMPGroupTable) OvsdbTableName() string {
+	return "IGMP_Group"
+}
+
+func (tbl IGMPGroupTable) OvsdbIsRoot() bool {
+	return true
+}
+
+func (tbl IGMPGroupTable) Rows() []types.IRow {
+	r := make([]types.IRow, len(tbl))
+	for i := range tbl {
+		r[i] = &tbl[i]
+	}
+	return r
+}
+
+func (tbl IGMPGroupTable) NewRow() types.IRow {
+	return &IGMPGroup{}
+}
+
+func (tbl *IGMPGroupTable) AppendRow(irow types.IRow) {
+	row := irow.(*IGMPGroup)
+	*tbl = append(*tbl, *row)
+}
+
+func (tbl IGMPGroupTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *IGMPGroup) MatchByAddressDatapathChassis(row1 *IGMPGroup) bool {
+	if !types.MatchString(row.Address, row1.Address) {
+		return false
+	}
+	if !types.MatchUuidOptional(row.Datapath, row1.Datapath) {
+		return false
+	}
+	if !types.MatchUuidOptional(row.Chassis, row1.Chassis) {
+		return false
+	}
+	return true
+}
+
+func (tbl IGMPGroupTable) GetByAddressDatapathChassis(row1 *IGMPGroup) *IGMPGroup {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByAddressDatapathChassis(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl IGMPGroupTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*IGMPGroup)
+	if !(types.IsZeroString(row1.Address) || types.IsZeroUuidOptional(row1.Datapath) || types.IsZeroUuidOptional(row1.Chassis)) {
+		if row := tbl.GetByAddressDatapathChassis(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl IGMPGroupTable) FindOneMatchNonZeros(row1 *IGMPGroup) *IGMPGroup {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchNonZeros(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+type IGMPGroup struct {
+	Uuid     string   `json:"_uuid"`
+	Version  string   `json:"_version"`
+	Address  string   `json:"address"`
+	Chassis  *string  `json:"chassis"`
+	Datapath *string  `json:"datapath"`
+	Ports    []string `json:"ports"`
+}
+
+var _ types.IRow = &IGMPGroup{}
+
+func (row *IGMPGroup) OvsdbTableName() string {
+	return "IGMP_Group"
+}
+
+func (row *IGMPGroup) OvsdbIsRoot() bool {
+	return true
+}
+
+func (row *IGMPGroup) OvsdbUuid() string {
+	return row.Uuid
+}
+
+func (row *IGMPGroup) OvsdbCmdArgs() []string {
+	r := []string{}
+	r = append(r, types.OvsdbCmdArgsString("address", row.Address)...)
+	r = append(r, types.OvsdbCmdArgsUuidOptional("chassis", row.Chassis)...)
+	r = append(r, types.OvsdbCmdArgsUuidOptional("datapath", row.Datapath)...)
+	r = append(r, types.OvsdbCmdArgsUuidMultiples("ports", row.Ports)...)
+	return r
+}
+
+func (row *IGMPGroup) SetColumn(name string, val interface{}) (err error) {
+	defer func() {
+		if panicErr := recover(); panicErr != nil {
+			err = errors.Wrapf(panicErr.(error), "%s: %#v", name, fmt.Sprintf("%#v", val))
+		}
+	}()
+	switch name {
+	case "_uuid":
+		row.Uuid = types.EnsureUuid(val)
+	case "_version":
+		row.Version = types.EnsureUuid(val)
+	case "address":
+		row.Address = types.EnsureString(val)
+	case "chassis":
+		row.Chassis = types.EnsureUuidOptional(val)
+	case "datapath":
+		row.Datapath = types.EnsureUuidOptional(val)
+	case "ports":
+		row.Ports = types.EnsureUuidMultiples(val)
+	default:
+		panic(types.ErrUnknownColumn)
+	}
+	return
+}
+
+func (row *IGMPGroup) MatchNonZeros(row1 *IGMPGroup) bool {
+	if !types.MatchUuidIfNonZero(row.Uuid, row1.Uuid) {
+		return false
+	}
+	if !types.MatchUuidIfNonZero(row.Version, row1.Version) {
+		return false
+	}
+	if !types.MatchStringIfNonZero(row.Address, row1.Address) {
+		return false
+	}
+	if !types.MatchUuidOptionalIfNonZero(row.Chassis, row1.Chassis) {
+		return false
+	}
+	if !types.MatchUuidOptionalIfNonZero(row.Datapath, row1.Datapath) {
+		return false
+	}
+	if !types.MatchUuidMultiplesIfNonZero(row.Ports, row1.Ports) {
+		return false
+	}
+	return true
+}
+
+func (tbl IGMPGroupTable) FindChassisReferrer_chassis(refUuid string) (r []*IGMPGroup) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Chassis != nil && *row.Chassis == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl IGMPGroupTable) FindDatapathBindingReferrer_datapath(refUuid string) (r []*IGMPGroup) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Datapath != nil && *row.Datapath == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (tbl IGMPGroupTable) FindPortBindingReferrer_ports(refUuid string) (r []*IGMPGroup) {
+	for i := range tbl {
+		row := &tbl[i]
+		for _, val := range row.Ports {
+			if val == refUuid {
+				r = append(r, row)
+			}
+		}
+	}
+	return r
+}
+
+func (row *IGMPGroup) HasExternalIds() bool {
+	return false
+}
+
+func (row *IGMPGroup) SetExternalId(k, v string) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *IGMPGroup) GetExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *IGMPGroup) RemoveExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+type IPMulticastTable []IPMulticast
+
+var _ types.ITable = &IPMulticastTable{}
+
+func (tbl IPMulticastTable) OvsdbTableName() string {
+	return "IP_Multicast"
+}
+
+func (tbl IPMulticastTable) OvsdbIsRoot() bool {
+	return true
+}
+
+func (tbl IPMulticastTable) Rows() []types.IRow {
+	r := make([]types.IRow, len(tbl))
+	for i := range tbl {
+		r[i] = &tbl[i]
+	}
+	return r
+}
+
+func (tbl IPMulticastTable) NewRow() types.IRow {
+	return &IPMulticast{}
+}
+
+func (tbl *IPMulticastTable) AppendRow(irow types.IRow) {
+	row := irow.(*IPMulticast)
+	*tbl = append(*tbl, *row)
+}
+
+func (tbl IPMulticastTable) OvsdbHasIndex() bool {
+	return true
+}
+
+func (row *IPMulticast) MatchByDatapath(row1 *IPMulticast) bool {
+	if !types.MatchUuid(row.Datapath, row1.Datapath) {
+		return false
+	}
+	return true
+}
+
+func (tbl IPMulticastTable) GetByDatapath(row1 *IPMulticast) *IPMulticast {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchByDatapath(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl IPMulticastTable) OvsdbGetByAnyIndex(irow1 types.IRow) types.IRow {
+	row1 := irow1.(*IPMulticast)
+	if !(types.IsZeroUuid(row1.Datapath)) {
+		if row := tbl.GetByDatapath(row1); row != nil {
+			return row
+		}
+	}
+	return nil
+}
+
+func (tbl IPMulticastTable) FindOneMatchNonZeros(row1 *IPMulticast) *IPMulticast {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.MatchNonZeros(row1) {
+			return row
+		}
+	}
+	return nil
+}
+
+type IPMulticast struct {
+	Uuid          string `json:"_uuid"`
+	Version       string `json:"_version"`
+	Datapath      string `json:"datapath"`
+	Enabled       *bool  `json:"enabled"`
+	EthSrc        string `json:"eth_src"`
+	IdleTimeout   *int64 `json:"idle_timeout"`
+	Ip4Src        string `json:"ip4_src"`
+	Querier       *bool  `json:"querier"`
+	QueryInterval *int64 `json:"query_interval"`
+	QueryMaxResp  *int64 `json:"query_max_resp"`
+	SeqNo         int64  `json:"seq_no"`
+	TableSize     *int64 `json:"table_size"`
+}
+
+var _ types.IRow = &IPMulticast{}
+
+func (row *IPMulticast) OvsdbTableName() string {
+	return "IP_Multicast"
+}
+
+func (row *IPMulticast) OvsdbIsRoot() bool {
+	return true
+}
+
+func (row *IPMulticast) OvsdbUuid() string {
+	return row.Uuid
+}
+
+func (row *IPMulticast) OvsdbCmdArgs() []string {
+	r := []string{}
+	r = append(r, types.OvsdbCmdArgsUuid("datapath", row.Datapath)...)
+	r = append(r, types.OvsdbCmdArgsBooleanOptional("enabled", row.Enabled)...)
+	r = append(r, types.OvsdbCmdArgsString("eth_src", row.EthSrc)...)
+	r = append(r, types.OvsdbCmdArgsIntegerOptional("idle_timeout", row.IdleTimeout)...)
+	r = append(r, types.OvsdbCmdArgsString("ip4_src", row.Ip4Src)...)
+	r = append(r, types.OvsdbCmdArgsBooleanOptional("querier", row.Querier)...)
+	r = append(r, types.OvsdbCmdArgsIntegerOptional("query_interval", row.QueryInterval)...)
+	r = append(r, types.OvsdbCmdArgsIntegerOptional("query_max_resp", row.QueryMaxResp)...)
+	r = append(r, types.OvsdbCmdArgsInteger("seq_no", row.SeqNo)...)
+	r = append(r, types.OvsdbCmdArgsIntegerOptional("table_size", row.TableSize)...)
+	return r
+}
+
+func (row *IPMulticast) SetColumn(name string, val interface{}) (err error) {
+	defer func() {
+		if panicErr := recover(); panicErr != nil {
+			err = errors.Wrapf(panicErr.(error), "%s: %#v", name, fmt.Sprintf("%#v", val))
+		}
+	}()
+	switch name {
+	case "_uuid":
+		row.Uuid = types.EnsureUuid(val)
+	case "_version":
+		row.Version = types.EnsureUuid(val)
+	case "datapath":
+		row.Datapath = types.EnsureUuid(val)
+	case "enabled":
+		row.Enabled = types.EnsureBooleanOptional(val)
+	case "eth_src":
+		row.EthSrc = types.EnsureString(val)
+	case "idle_timeout":
+		row.IdleTimeout = types.EnsureIntegerOptional(val)
+	case "ip4_src":
+		row.Ip4Src = types.EnsureString(val)
+	case "querier":
+		row.Querier = types.EnsureBooleanOptional(val)
+	case "query_interval":
+		row.QueryInterval = types.EnsureIntegerOptional(val)
+	case "query_max_resp":
+		row.QueryMaxResp = types.EnsureIntegerOptional(val)
+	case "seq_no":
+		row.SeqNo = types.EnsureInteger(val)
+	case "table_size":
+		row.TableSize = types.EnsureIntegerOptional(val)
+	default:
+		panic(types.ErrUnknownColumn)
+	}
+	return
+}
+
+func (row *IPMulticast) MatchNonZeros(row1 *IPMulticast) bool {
+	if !types.MatchUuidIfNonZero(row.Uuid, row1.Uuid) {
+		return false
+	}
+	if !types.MatchUuidIfNonZero(row.Version, row1.Version) {
+		return false
+	}
+	if !types.MatchUuidIfNonZero(row.Datapath, row1.Datapath) {
+		return false
+	}
+	if !types.MatchBooleanOptionalIfNonZero(row.Enabled, row1.Enabled) {
+		return false
+	}
+	if !types.MatchStringIfNonZero(row.EthSrc, row1.EthSrc) {
+		return false
+	}
+	if !types.MatchIntegerOptionalIfNonZero(row.IdleTimeout, row1.IdleTimeout) {
+		return false
+	}
+	if !types.MatchStringIfNonZero(row.Ip4Src, row1.Ip4Src) {
+		return false
+	}
+	if !types.MatchBooleanOptionalIfNonZero(row.Querier, row1.Querier) {
+		return false
+	}
+	if !types.MatchIntegerOptionalIfNonZero(row.QueryInterval, row1.QueryInterval) {
+		return false
+	}
+	if !types.MatchIntegerOptionalIfNonZero(row.QueryMaxResp, row1.QueryMaxResp) {
+		return false
+	}
+	if !types.MatchIntegerIfNonZero(row.SeqNo, row1.SeqNo) {
+		return false
+	}
+	if !types.MatchIntegerOptionalIfNonZero(row.TableSize, row1.TableSize) {
+		return false
+	}
+	return true
+}
+
+func (tbl IPMulticastTable) FindDatapathBindingReferrer_datapath(refUuid string) (r []*IPMulticast) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Datapath == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
+func (row *IPMulticast) HasExternalIds() bool {
+	return false
+}
+
+func (row *IPMulticast) SetExternalId(k, v string) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *IPMulticast) GetExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
+}
+
+func (row *IPMulticast) RemoveExternalId(k string) (string, bool) {
+	panic(errors.Wrap(types.ErrUnknownColumn, "external_ids"))
 }
 
 type LogicalFlowTable []LogicalFlow
@@ -2736,8 +3758,10 @@ type PortBinding struct {
 	Version        string            `json:"_version"`
 	Chassis        *string           `json:"chassis"`
 	Datapath       string            `json:"datapath"`
+	Encap          *string           `json:"encap"`
 	ExternalIds    map[string]string `json:"external_ids"`
 	GatewayChassis []string          `json:"gateway_chassis"`
+	HaChassisGroup *string           `json:"ha_chassis_group"`
 	LogicalPort    string            `json:"logical_port"`
 	Mac            []string          `json:"mac"`
 	NatAddresses   []string          `json:"nat_addresses"`
@@ -2746,6 +3770,7 @@ type PortBinding struct {
 	Tag            *int64            `json:"tag"`
 	TunnelKey      int64             `json:"tunnel_key"`
 	Type           string            `json:"type"`
+	VirtualParent  *string           `json:"virtual_parent"`
 }
 
 var _ types.IRow = &PortBinding{}
@@ -2766,8 +3791,10 @@ func (row *PortBinding) OvsdbCmdArgs() []string {
 	r := []string{}
 	r = append(r, types.OvsdbCmdArgsUuidOptional("chassis", row.Chassis)...)
 	r = append(r, types.OvsdbCmdArgsUuid("datapath", row.Datapath)...)
+	r = append(r, types.OvsdbCmdArgsUuidOptional("encap", row.Encap)...)
 	r = append(r, types.OvsdbCmdArgsMapStringString("external_ids", row.ExternalIds)...)
 	r = append(r, types.OvsdbCmdArgsUuidMultiples("gateway_chassis", row.GatewayChassis)...)
+	r = append(r, types.OvsdbCmdArgsUuidOptional("ha_chassis_group", row.HaChassisGroup)...)
 	r = append(r, types.OvsdbCmdArgsString("logical_port", row.LogicalPort)...)
 	r = append(r, types.OvsdbCmdArgsStringMultiples("mac", row.Mac)...)
 	r = append(r, types.OvsdbCmdArgsStringMultiples("nat_addresses", row.NatAddresses)...)
@@ -2776,6 +3803,7 @@ func (row *PortBinding) OvsdbCmdArgs() []string {
 	r = append(r, types.OvsdbCmdArgsIntegerOptional("tag", row.Tag)...)
 	r = append(r, types.OvsdbCmdArgsInteger("tunnel_key", row.TunnelKey)...)
 	r = append(r, types.OvsdbCmdArgsString("type", row.Type)...)
+	r = append(r, types.OvsdbCmdArgsStringOptional("virtual_parent", row.VirtualParent)...)
 	return r
 }
 
@@ -2794,10 +3822,14 @@ func (row *PortBinding) SetColumn(name string, val interface{}) (err error) {
 		row.Chassis = types.EnsureUuidOptional(val)
 	case "datapath":
 		row.Datapath = types.EnsureUuid(val)
+	case "encap":
+		row.Encap = types.EnsureUuidOptional(val)
 	case "external_ids":
 		row.ExternalIds = types.EnsureMapStringString(val)
 	case "gateway_chassis":
 		row.GatewayChassis = types.EnsureUuidMultiples(val)
+	case "ha_chassis_group":
+		row.HaChassisGroup = types.EnsureUuidOptional(val)
 	case "logical_port":
 		row.LogicalPort = types.EnsureString(val)
 	case "mac":
@@ -2814,6 +3846,8 @@ func (row *PortBinding) SetColumn(name string, val interface{}) (err error) {
 		row.TunnelKey = types.EnsureInteger(val)
 	case "type":
 		row.Type = types.EnsureString(val)
+	case "virtual_parent":
+		row.VirtualParent = types.EnsureStringOptional(val)
 	default:
 		panic(types.ErrUnknownColumn)
 	}
@@ -2833,10 +3867,16 @@ func (row *PortBinding) MatchNonZeros(row1 *PortBinding) bool {
 	if !types.MatchUuidIfNonZero(row.Datapath, row1.Datapath) {
 		return false
 	}
+	if !types.MatchUuidOptionalIfNonZero(row.Encap, row1.Encap) {
+		return false
+	}
 	if !types.MatchMapStringStringIfNonZero(row.ExternalIds, row1.ExternalIds) {
 		return false
 	}
 	if !types.MatchUuidMultiplesIfNonZero(row.GatewayChassis, row1.GatewayChassis) {
+		return false
+	}
+	if !types.MatchUuidOptionalIfNonZero(row.HaChassisGroup, row1.HaChassisGroup) {
 		return false
 	}
 	if !types.MatchStringIfNonZero(row.LogicalPort, row1.LogicalPort) {
@@ -2863,6 +3903,9 @@ func (row *PortBinding) MatchNonZeros(row1 *PortBinding) bool {
 	if !types.MatchStringIfNonZero(row.Type, row1.Type) {
 		return false
 	}
+	if !types.MatchStringOptionalIfNonZero(row.VirtualParent, row1.VirtualParent) {
+		return false
+	}
 	return true
 }
 
@@ -2886,6 +3929,16 @@ func (tbl PortBindingTable) FindDatapathBindingReferrer_datapath(refUuid string)
 	return r
 }
 
+func (tbl PortBindingTable) FindEncapReferrer_encap(refUuid string) (r []*PortBinding) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.Encap != nil && *row.Encap == refUuid {
+			r = append(r, row)
+		}
+	}
+	return r
+}
+
 func (tbl PortBindingTable) FindGatewayChassisReferrer_gateway_chassis(refUuid string) (r []*PortBinding) {
 	for i := range tbl {
 		row := &tbl[i]
@@ -2893,6 +3946,16 @@ func (tbl PortBindingTable) FindGatewayChassisReferrer_gateway_chassis(refUuid s
 			if val == refUuid {
 				r = append(r, row)
 			}
+		}
+	}
+	return r
+}
+
+func (tbl PortBindingTable) FindHAChassisGroupReferrer_ha_chassis_group(refUuid string) (r []*PortBinding) {
+	for i := range tbl {
+		row := &tbl[i]
+		if row.HaChassisGroup != nil && *row.HaChassisGroup == refUuid {
+			r = append(r, row)
 		}
 	}
 	return r
@@ -3413,7 +4476,9 @@ type SBGlobal struct {
 	Version     string            `json:"_version"`
 	Connections []string          `json:"connections"`
 	ExternalIds map[string]string `json:"external_ids"`
+	Ipsec       bool              `json:"ipsec"`
 	NbCfg       int64             `json:"nb_cfg"`
+	Options     map[string]string `json:"options"`
 	Ssl         *string           `json:"ssl"`
 }
 
@@ -3435,7 +4500,9 @@ func (row *SBGlobal) OvsdbCmdArgs() []string {
 	r := []string{}
 	r = append(r, types.OvsdbCmdArgsUuidMultiples("connections", row.Connections)...)
 	r = append(r, types.OvsdbCmdArgsMapStringString("external_ids", row.ExternalIds)...)
+	r = append(r, types.OvsdbCmdArgsBoolean("ipsec", row.Ipsec)...)
 	r = append(r, types.OvsdbCmdArgsInteger("nb_cfg", row.NbCfg)...)
+	r = append(r, types.OvsdbCmdArgsMapStringString("options", row.Options)...)
 	r = append(r, types.OvsdbCmdArgsUuidOptional("ssl", row.Ssl)...)
 	return r
 }
@@ -3455,8 +4522,12 @@ func (row *SBGlobal) SetColumn(name string, val interface{}) (err error) {
 		row.Connections = types.EnsureUuidMultiples(val)
 	case "external_ids":
 		row.ExternalIds = types.EnsureMapStringString(val)
+	case "ipsec":
+		row.Ipsec = types.EnsureBoolean(val)
 	case "nb_cfg":
 		row.NbCfg = types.EnsureInteger(val)
+	case "options":
+		row.Options = types.EnsureMapStringString(val)
 	case "ssl":
 		row.Ssl = types.EnsureUuidOptional(val)
 	default:
@@ -3478,7 +4549,13 @@ func (row *SBGlobal) MatchNonZeros(row1 *SBGlobal) bool {
 	if !types.MatchMapStringStringIfNonZero(row.ExternalIds, row1.ExternalIds) {
 		return false
 	}
+	if !types.MatchBooleanIfNonZero(row.Ipsec, row1.Ipsec) {
+		return false
+	}
 	if !types.MatchIntegerIfNonZero(row.NbCfg, row1.NbCfg) {
+		return false
+	}
+	if !types.MatchMapStringStringIfNonZero(row.Options, row1.Options) {
 		return false
 	}
 	if !types.MatchUuidOptionalIfNonZero(row.Ssl, row1.Ssl) {

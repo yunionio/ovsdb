@@ -796,6 +796,7 @@ type Controller struct {
 	Role                 *string           `json:"role"`
 	Status               map[string]string `json:"status"`
 	Target               string            `json:"target"`
+	Type                 *string           `json:"type"`
 }
 
 var _ types.IRow = &Controller{}
@@ -829,6 +830,7 @@ func (row *Controller) OvsdbCmdArgs() []string {
 	r = append(r, types.OvsdbCmdArgsStringOptional("role", row.Role)...)
 	r = append(r, types.OvsdbCmdArgsMapStringString("status", row.Status)...)
 	r = append(r, types.OvsdbCmdArgsString("target", row.Target)...)
+	r = append(r, types.OvsdbCmdArgsStringOptional("type", row.Type)...)
 	return r
 }
 
@@ -873,6 +875,8 @@ func (row *Controller) SetColumn(name string, val interface{}) (err error) {
 		row.Status = types.EnsureMapStringString(val)
 	case "target":
 		row.Target = types.EnsureString(val)
+	case "type":
+		row.Type = types.EnsureStringOptional(val)
 	default:
 		panic(types.ErrUnknownColumn)
 	}
@@ -929,6 +933,9 @@ func (row *Controller) MatchNonZeros(row1 *Controller) bool {
 		return false
 	}
 	if !types.MatchStringIfNonZero(row.Target, row1.Target) {
+		return false
+	}
+	if !types.MatchStringOptionalIfNonZero(row.Type, row1.Type) {
 		return false
 	}
 	return true
